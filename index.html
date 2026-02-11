@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b5fff" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="SHOP Layout" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+
+  <title>Créateur de layout – SHOP 2.0 (V7)</title>
+
+  <style>
+    :root{
+      --cell: 22px;
+      --bg: #f6f7fb;
+      --panel: #ffffff;
+      --text: #0b1220;
+      --muted: #5b667a;
+      --border: #d8deea;
+      --brand: #0b5fff;
+      --brand2:#1aa3ff;
+      --danger:#d92d20;
+      --ok:#12b76a;
+      --shadow: 0 10px 30px rgba(16,24,40,0.10);
+      --radius: 14px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    }
+    *{ box-sizing:border-box; }
+    html, body{ height:100%; }
+    body{
+      margin:0;
+      font-family: var(--font);
+      color: var(--text);
+      background: radial-gradient(1200px 600px at 15% 0%, #eef4ff 0%, var(--bg) 55%);
+      overflow:hidden;
+    }
+
+    /* Top-only menus */
+    header{
+      position: sticky;
+      top:0;
+      z-index: 10;
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(16,24,40,0.06);
+    }
+
+    .top{
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      justify-content: space-between;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      min-width: 170px;
+    }
+    .logo{
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%);
+      box-shadow: 0 10px 22px rgba(11,95,255,0.25);
+      flex: 0 0 auto;
+    }
+    .brandTxt{ line-height:1.1; }
+    .brandTxt .t{ font-weight: 950; font-size: 14px; }
+    .brandTxt .s{ color: var(--muted); font-size: 11px; font-weight: 700; }
+
+    .menuBar{
+      display:flex;
+      gap: 8px;
+      align-items:center;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+
+    details.menu{
+      position: relative;
+    }
+    details.menu > summary{
+      list-style:none;
+      cursor:pointer;
+      user-select:none;
+      border: 1px solid var(--border);
+      background:#fff;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text);
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      box-shadow: 0 1px 0 rgba(16,24,40,0.02);
+      -webkit-tap-highlight-color: transparent;
+    }
+    details.menu > summary::-webkit-details-marker{ display:none; }
+    details.menu[open] > summary{
+      border-color: rgba(11,95,255,0.35);
+      background: rgba(11,95,255,0.06);
+      color: var(--brand);
+    }
+
+    .dropdown{
+      position: absolute;
+      right: 0;
+      top: calc(100% + 8px);
+      width: min(92vw, 360px);
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .dropHead{
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+    }
+    .dropHead .title{ font-size: 12px; font-weight: 950; }
+    .dropBody{ padding: 10px 12px 12px 12px; }
+
+    .btn{
+      border: 1px solid var(--border);
+      background: #fff;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      font-weight: 900;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap: 8px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      width: 100%;
+    }
+    .btn + .btn{ margin-top: 8px; }
+    .btn.primary{ background: linear-gradient(135deg, var(--brand) 0%, var(--brand2) 100%); color:#fff; border-color: transparent; }
+    .btn.danger{ border-color: rgba(217,45,32,0.35); color: var(--danger); }
+    .btn.small{ padding: 8px 10px; border-radius: 10px; width: auto; }
+
+    .row{ display:flex; gap: 8px; flex-wrap: wrap; align-items:center; }
+
+    .hint{
+      padding: 8px 12px 10px 12px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background:#fff;
+      color: var(--muted);
+    }
+    .badge.ok{ border-color: rgba(18,183,106,0.35); color: #067647; }
+    .badge.warn{ border-color: rgba(245,158,11,0.35); color: #92400e; }
+
+    .switch{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .switch small{ color: var(--muted); font-weight: 800; }
+    input[type="checkbox"]{ width: 18px; height: 18px; accent-color: var(--brand); }
+
+    textarea{
+      width: 100%;
+      height: 150px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      font-size: 11px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    /* Main */
+    #main{
+      position:absolute;
+      top: 104px;
+      left:0;
+      right:0;
+      bottom:0;
+      overflow: auto;
+      padding: 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #gridWrap{
+      width: max-content;
+      background:#fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    #grid{
+      display:grid;
+      grid-template-columns: repeat(40, var(--cell));
+      grid-auto-rows: var(--cell);
+      background-image:
+        linear-gradient(#e9edf6 1px, transparent 1px),
+        linear-gradient(90deg, #e9edf6 1px, transparent 1px);
+      background-size: var(--cell) var(--cell);
+    }
+
+    .cell{
+      width: var(--cell);
+      height: var(--cell);
+      border: 1px solid rgba(216,222,234,0.85);
+      background:#fff;
+      cursor:pointer;
+      font-size: 9px;
+      font-weight: 900;
+      text-align:center;
+      line-height: var(--cell);
+      user-select:none;
+      color: #0b1220;
+    }
+    .cell.highlight{ outline: 2px solid var(--brand); outline-offset: -2px; }
+
+    .type-empty{ background:#fff; color:#0b1220; }
+    .type-bin{ background:#111827; color:#fff; }
+    .type-wall{ background:#6b7280; color:#fff; }
+    .type-door{ background:#12b76a; color:#fff; }
+    .type-work{ background:#f59e0b; color:#111827; }
+
+    /* Modal */
+    #modal{
+      position: fixed;
+      inset: 0;
+      background: rgba(11,18,32,0.52);
+      display:none;
+      align-items: center;
+      justify-content: center;
+      z-index: 30;
+      padding: 16px;
+    }
+    #modalContent{
+      width: min(420px, 92vw);
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.6);
+    }
+    .modalTop{
+      padding: 12px 14px;
+      background: linear-gradient(135deg, rgba(11,95,255,0.10), rgba(26,163,255,0.08));
+      border-bottom: 1px solid var(--border);
+    }
+    .modalTop h2{ margin:0; font-size: 15px; font-weight: 950; }
+    .modalTop p{ margin: 4px 0 0 0; font-size: 12px; color: var(--muted); font-weight: 800; }
+    .modalBody{ padding: 12px 14px 14px 14px; }
+    .field{ margin-top: 10px; }
+    .field label{ display:block; font-size: 12px; font-weight: 950; }
+    .field input{
+      width: 100%;
+      padding: 10px 12px;
+      margin-top: 6px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .modalButtons{ padding: 0 14px 14px 14px; display:flex; gap: 8px; justify-content:flex-end; }
+
+    /* Toast */
+    #toast{
+      position: fixed;
+      left: 50%;
+      bottom: 14px;
+      transform: translateX(-50%);
+      background: rgba(17,24,39,0.92);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      display:none;
+      z-index: 40;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.25);
+      max-width: calc(100vw - 24px);
+      text-align:center;
+    }
+
+    @media (max-width: 740px){
+      .top{ padding-bottom: 8px; }
+      #main{ top: 114px; }
+      .brandTxt .t{ font-size: 13px; }
+      details.menu > summary{ padding: 8px 10px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="top">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div class="brandTxt">
+          <div class="t">SHOP Layout <span style="opacity:.7">V7</span></div>
+          <div class="s">Menus en haut • iPhone friendly • PWA</div>
+        </div>
+      </div>
+
+      <div class="menuBar">
+        <span class="badge" id="onlineBadge">⏳</span>
+        <span class="badge" id="dirtyBadge">Non sauvegardé</span>
+
+        <details class="menu" id="menuTools">
+          <summary>🧰 Outils</summary>
+          <div class="dropdown">
+            <div class="dropHead"><div class="title">Outils</div><button class="btn small" data-close="menuTools">Fermer</button></div>
+            <div class="dropBody">
+              <div class="row" style="gap:10px;">
+                <button class="btn" data-tool="binrange">BIN+ (ligne)</button>
+                <button class="btn" data-tool="bin">BIN</button>
+                <button class="btn" data-tool="label">Texte</button>
+                <button class="btn" data-tool="wall">Mur</button>
+                <button class="btn" data-tool="door">Porte</button>
+                <button class="btn" data-tool="work">Poste</button>
+                <button class="btn" data-tool="empty">Vide</button>
+              </div>
+              <div style="height:10px"></div>
+              <div class="switch">
+                <div>
+                  Peindre en glissant<br><small>Appuie + glisse pour remplir</small>
+                </div>
+                <input type="checkbox" id="paintDrag" checked />
+              </div>
+              <div style="height:8px"></div>
+              <div class="switch">
+                <div>
+                  Afficher labels<br><small>Montre/caché les numéros</small>
+                </div>
+                <input type="checkbox" id="showLabels" checked />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <details class="menu" id="menuActions">
+          <summary>⚡ Actions</summary>
+          <div class="dropdown">
+            <div class="dropHead"><div class="title">Actions</div><button class="btn small" data-close="menuActions">Fermer</button></div>
+            <div class="dropBody">
+              <button class="btn primary" id="btnSaveLocal">💾 Sauver</button>
+              <button class="btn" id="btnLoadLocal">↩️ Charger</button>
+              <div class="row">
+                <button class="btn" style="flex:1" id="btnUndo">↶ Annuler</button>
+                <button class="btn" style="flex:1" id="btnRedo">↷ Refaire</button>
+              </div>
+              <div class="row">
+                <button class="btn small" id="zoomOut">➖ Zoom</button>
+                <button class="btn small" id="zoomIn">➕ Zoom</button>
+              </div>
+              <button class="btn danger" id="btnClear">🧹 Tout vider</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="menu" id="menuData">
+          <summary>📦 Données</summary>
+          <div class="dropdown">
+            <div class="dropHead"><div class="title">Import / Export</div><button class="btn small" data-close="menuData">Fermer</button></div>
+            <div class="dropBody">
+              <button class="btn" id="btnExport">Exporter JSON</button>
+              <div class="row">
+                <button class="btn" style="flex:1" id="btnCopy">Copier</button>
+                <button class="btn" style="flex:1" id="btnDownload">Télécharger</button>
+              </div>
+              <input type="file" id="fileImport" accept="application/json" style="display:none" />
+              <button class="btn" id="btnImport">Importer…</button>
+              <div style="height:8px"></div>
+              <textarea id="output" placeholder="Le JSON s’affichera ici après « Exporter JSON »"></textarea>
+            </div>
+          </div>
+        </details>
+
+        <details class="menu" id="menuInfo">
+          <summary>ℹ️ Infos</summary>
+          <div class="dropdown">
+            <div class="dropHead"><div class="title">Infos</div><button class="btn small" data-close="menuInfo">Fermer</button></div>
+            <div class="dropBody">
+              <div class="badge" id="coords" style="width:100%; justify-content:center;">Aucune</div>
+              <div style="height:10px"></div>
+              <button class="btn" id="btnInstall">⬇️ Installer (PWA)</button>
+              <button class="btn" id="btnHelp">⌨️ Raccourcis</button>
+              <div style="height:8px"></div>
+              <div class="badge" style="width:100%; justify-content:center;">Astuce iPhone: Safari → Partager → Sur l’écran d’accueil</div>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+
+    <div class="hint" id="hint">Mode : Création de BIN – clic 1 = première extrémité.</div>
+  </header>
+
+  <div id="main">
+    <div id="gridWrap">
+      <div id="grid" aria-label="Grille"></div>
+    </div>
+  </div>
+
+  <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div id="modalContent">
+      <div class="modalTop">
+        <h2 id="modalTitle">Info de la BIN</h2>
+        <p>Tu as choisi une ligne de BIN. Indique la section et le numéro.</p>
+      </div>
+      <div class="modalBody">
+        <div class="field">
+          <label for="sectionInput">Section (ex: L2A, L3B)</label>
+          <input type="text" id="sectionInput" placeholder="L3A" autocomplete="off" />
+        </div>
+        <div class="field">
+          <label for="numeroInput">Numéro (ex: 01, 02)</label>
+          <input type="text" id="numeroInput" placeholder="01" inputmode="numeric" autocomplete="off" />
+        </div>
+      </div>
+      <div class="modalButtons">
+        <button class="btn" id="cancelBin">Annuler</button>
+        <button class="btn primary" id="saveBin">Valider</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+  const ROWS = 30;
+  const COLS = 40;
+
+  const DEFAULT_CELL = () => ({
+    type: 'empty', label: '', binId: null, depth: null, isHead: false, direction: null
+  });
+
+  let gridData = Array.from({length: ROWS}, () => Array.from({length: COLS}, () => DEFAULT_CELL()));
+
+  // DOM
+  const gridEl = document.getElementById('grid');
+  const coordsEl = document.getElementById('coords');
+  const outputEl = document.getElementById('output');
+  const hintEl = document.getElementById('hint');
+  const modal = document.getElementById('modal');
+  const sectionInput = document.getElementById('sectionInput');
+  const numeroInput = document.getElementById('numeroInput');
+  const saveBinBtn = document.getElementById('saveBin');
+  const cancelBinBtn = document.getElementById('cancelBin');
+  const paintDragEl = document.getElementById('paintDrag');
+  const showLabelsEl = document.getElementById('showLabels');
+  const dirtyBadge = document.getElementById('dirtyBadge');
+  const onlineBadge = document.getElementById('onlineBadge');
+  const toastEl = document.getElementById('toast');
+
+  // State
+  let lastSelected = null;
+  let isPainting = false;
+  let dirty = false;
+  let currentTool = 'binrange';
+
+  // Undo/Redo
+  const MAX_HISTORY = 60;
+  let history = [];
+  let future = [];
+
+  // BIN range
+  let binRangeState = { phase: 'idle', start: null, end: null, cells: [], head: null };
+
+  const STORAGE_KEY = 'shop_layout_v7';
+
+  function toast(msg){
+    toastEl.textContent = msg;
+    toastEl.style.display = 'block';
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(() => toastEl.style.display = 'none', 2400);
+  }
+
+  function setDirty(v){
+    dirty = v;
+    dirtyBadge.textContent = dirty ? 'Non sauvegardé' : 'OK';
+    dirtyBadge.className = 'badge ' + (dirty ? 'warn' : 'ok');
+  }
+
+  function snapshot(){
+    const snap = JSON.stringify(gridData);
+    history.push(snap);
+    if(history.length > MAX_HISTORY) history.shift();
+    future.length = 0;
+  }
+
+  function restoreFromSnapshot(snap){
+    gridData = JSON.parse(snap);
+    renderAll();
+  }
+
+  function undo(){
+    if(history.length === 0) return toast('Rien à annuler');
+    future.push(JSON.stringify(gridData));
+    restoreFromSnapshot(history.pop());
+    setDirty(true);
+  }
+
+  function redo(){
+    if(future.length === 0) return toast('Rien à refaire');
+    history.push(JSON.stringify(gridData));
+    restoreFromSnapshot(future.pop());
+    setDirty(true);
+  }
+
+  function setTool(tool){
+    currentTool = tool;
+    document.getElementById('menuTools').removeAttribute('open');
+    if(tool === 'binrange') setHint('Mode : Création de BIN – clic 1 = première extrémité.');
+    else setHint('Mode : outil simple (mur, porte, poste, BIN, texte...).');
+    toast('Outil: ' + tool);
+    resetBinRangeState();
+  }
+
+  function setHint(text){ hintEl.textContent = text; }
+
+  function resetBinRangeState(){
+    binRangeState = { phase: 'idle', start: null, end: null, cells: [], head: null };
+    if(currentTool === 'binrange') setHint('Mode : Création de BIN – clic 1 = première extrémité.');
+  }
+
+  function applyCellVisual(cell, data){
+    cell.className = 'cell';
+    cell.classList.add('type-' + (data.type || 'empty'));
+    cell.textContent = (showLabelsEl.checked && data.label) ? data.label : '';
+  }
+
+  function createGrid(){
+    gridEl.innerHTML = '';
+    for(let r=0; r<ROWS; r++){
+      for(let c=0; c<COLS; c++){
+        const cell = document.createElement('div');
+        cell.className = 'cell type-empty';
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        cell.title = `Ligne ${r+1}, Colonne ${c+1}`;
+
+        cell.addEventListener('pointerdown', (e) => {
+          e.preventDefault();
+          isPainting = paintDragEl.checked;
+          onCellAction(cell, true);
+        });
+        cell.addEventListener('pointerenter', () => {
+          if(isPainting) onCellAction(cell, false);
+        });
+
+        applyCellVisual(cell, gridData[r][c]);
+        gridEl.appendChild(cell);
+      }
+    }
+    window.addEventListener('pointerup', () => { isPainting = false; });
+  }
+
+  function updateCoords(row, col){
+    const d = gridData[row][col];
+    const parts = [`L${row+1} C${col+1}`, d.type];
+    if(d.binId) parts.push('binId=' + d.binId);
+    if(d.depth !== null && d.depth !== undefined) parts.push('depth=' + d.depth);
+    if(d.isHead) parts.push('head');
+    if(d.direction) parts.push('dir=' + d.direction);
+    if(d.label) parts.push('label=' + d.label);
+    coordsEl.textContent = parts.join(' • ');
+  }
+
+  function onCellAction(cell, isPrimary){
+    const row = parseInt(cell.dataset.row, 10);
+    const col = parseInt(cell.dataset.col, 10);
+
+    if(lastSelected) lastSelected.classList.remove('highlight');
+    cell.classList.add('highlight');
+    lastSelected = cell;
+
+    if(currentTool === 'binrange'){
+      if(isPrimary) handleBinRangeClick(row, col);
+    } else {
+      if(isPrimary) snapshot();
+      handleSimpleToolClick(row, col, currentTool);
+      setDirty(true);
+    }
+
+    updateCoords(row, col);
+  }
+
+  function handleSimpleToolClick(row, col, tool){
+    let data = gridData[row][col];
+
+    if(tool === 'label'){
+      const txt = prompt('Numéro / texte pour cette case :', data.label || '');
+      if(txt !== null){
+        data.label = txt.trim();
+        if(!data.type || data.type === 'empty') data.type = 'bin';
+      }
+    } else if(tool === 'bin'){
+      data.type = 'bin';
+      data.binId = null; data.depth = null; data.isHead = false; data.direction = null;
+      if(!data.label) data.label = '';
+    } else if(tool === 'empty'){
+      data = DEFAULT_CELL();
+    } else if(tool === 'wall' || tool === 'door' || tool === 'work'){
+      data.type = tool;
+      data.binId = null; data.depth = null; data.isHead = false; data.direction = null;
+      data.label = '';
+    }
+
+    gridData[row][col] = data;
+    const idx = row * COLS + col;
+    applyCellVisual(gridEl.children[idx], data);
+  }
+
+  function handleBinRangeClick(row, col){
+    if(binRangeState.phase === 'idle'){
+      binRangeState.start = {row, col};
+      binRangeState.phase = 'awaitSecond';
+      setHint('BIN : première extrémité OK. Clic 2 = deuxième extrémité (même ligne ou colonne).');
+      return;
+    }
+
+    if(binRangeState.phase === 'awaitSecond'){
+      const start = binRangeState.start;
+      if(start.row !== row && start.col !== col){
+        toast('La BIN doit être en ligne droite (même ligne ou même colonne).');
+        return;
+      }
+
+      binRangeState.end = {row, col};
+      const cells = [];
+      if(start.row === row){
+        const c1 = Math.min(start.col, col), c2 = Math.max(start.col, col);
+        for(let cc=c1; cc<=c2; cc++) cells.push({row, col: cc});
+      } else {
+        const r1 = Math.min(start.row, row), r2 = Math.max(start.row, row);
+        for(let rr=r1; rr<=r2; rr++) cells.push({row: rr, col});
+      }
+      if(cells.length === 0){ toast('Erreur de calcul de la BIN.'); resetBinRangeState(); return; }
+
+      snapshot();
+      binRangeState.cells = cells;
+      for(const pos of cells){
+        const d = gridData[pos.row][pos.col];
+        d.type = 'bin'; d.binId = null; d.depth = null; d.isHead = false; d.direction = null; d.label = '';
+        applyCellVisual(gridEl.children[pos.row*COLS + pos.col], d);
+      }
+      binRangeState.phase = 'awaitHead';
+      setHint('BIN : ligne définie. Clique UNE des extrémités pour définir le début de pige.');
+      setDirty(true);
+      return;
+    }
+
+    if(binRangeState.phase === 'awaitHead'){
+      const start = binRangeState.start, end = binRangeState.end;
+      const isStart = (row === start.row && col === start.col);
+      const isEnd = (row === end.row && col === end.col);
+      if(!isStart && !isEnd){ toast('Clique sur UNE des deux extrémités.'); return; }
+      binRangeState.head = {row, col};
+      openModal();
+    }
+  }
+
+  function openModal(){
+    sectionInput.value = ''; numeroInput.value = '';
+    modal.style.display = 'flex';
+    setTimeout(() => sectionInput.focus(), 60);
+  }
+  function closeModal(){ modal.style.display = 'none'; }
+
+  saveBinBtn.addEventListener('click', () => {
+    const section = sectionInput.value.trim();
+    const numero = numeroInput.value.trim();
+    if(!section || !numero){ toast('Section et numéro obligatoires (ex: L3B + 01).'); return; }
+
+    const binId = section + numero;
+    const cells = binRangeState.cells;
+    if(!cells || cells.length === 0){ toast('Erreur: aucune cellule de BIN.'); closeModal(); resetBinRangeState(); return; }
+
+    const head = binRangeState.head;
+    let ordered = [...cells];
+    let headIndex = ordered.findIndex(p => p.row === head.row && p.col === head.col);
+    if(headIndex === -1){ toast('Erreur de tête.'); closeModal(); resetBinRangeState(); return; }
+
+    let direction = null;
+    if(ordered.length > 1){
+      const next = ordered[headIndex === 0 ? 1 : headIndex - 1];
+      if(next.row === head.row) direction = (next.col > head.col) ? 'right' : 'left';
+      else direction = (next.row > head.row) ? 'down' : 'up';
+    }
+
+    if(headIndex !== 0){
+      ordered = ordered.slice(headIndex).concat(ordered.slice(0, headIndex));
+    }
+
+    const totalDepth = ordered.length - 1;
+    for(let i=0; i<ordered.length; i++){
+      const pos = ordered[i];
+      const d = gridData[pos.row][pos.col];
+      d.type = 'bin'; d.binId = binId; d.depth = i; d.isHead = (i===0); d.direction = direction;
+      d.label = (i===0) ? (numero + (totalDepth>0 ? ' P' + totalDepth : '')) : '';
+      applyCellVisual(gridEl.children[pos.row*COLS + pos.col], d);
+    }
+
+    closeModal();
+    toast('BIN ' + binId + ' enregistrée.');
+    resetBinRangeState();
+    setDirty(true);
+  });
+
+  cancelBinBtn.addEventListener('click', () => {
+    const cells = binRangeState.cells || [];
+    for(const pos of cells){
+      gridData[pos.row][pos.col] = DEFAULT_CELL();
+      applyCellVisual(gridEl.children[pos.row*COLS + pos.col], gridData[pos.row][pos.col]);
+    }
+    closeModal(); resetBinRangeState(); setDirty(true);
+  });
+
+  modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+
+  function renderAll(){
+    for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
+      applyCellVisual(gridEl.children[r*COLS + c], gridData[r][c]);
+    }
+    if(lastSelected){
+      const row = parseInt(lastSelected.dataset.row, 10);
+      const col = parseInt(lastSelected.dataset.col, 10);
+      updateCoords(row, col);
+    }
+  }
+
+  showLabelsEl.addEventListener('change', () => renderAll());
+
+  // Menus: close others when one opens
+  const menus = ['menuTools','menuActions','menuData','menuInfo'].map(id => document.getElementById(id));
+  menus.forEach(m => m.addEventListener('toggle', () => {
+    if(m.open){ menus.forEach(o => { if(o !== m) o.removeAttribute('open'); }); }
+  }));
+  document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => {
+    const id = btn.getAttribute('data-close');
+    document.getElementById(id)?.removeAttribute('open');
+  }));
+
+  // Tool buttons
+  document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.getAttribute('data-tool'))));
+
+  // Actions
+  document.getElementById('btnClear').addEventListener('click', () => {
+    snapshot();
+    for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++) gridData[r][c] = DEFAULT_CELL();
+    renderAll();
+    resetBinRangeState();
+    coordsEl.textContent = 'Aucune';
+    setDirty(true);
+    toast('Grille vidée');
+  });
+
+  function exportObj(){ return { rows: ROWS, cols: COLS, data: gridData }; }
+
+  document.getElementById('btnExport').addEventListener('click', () => {
+    outputEl.value = JSON.stringify(exportObj());
+    outputEl.focus(); outputEl.select();
+    toast('JSON exporté');
+  });
+
+  document.getElementById('btnCopy').addEventListener('click', async () => {
+    try{
+      if(!outputEl.value) document.getElementById('btnExport').click();
+      await navigator.clipboard.writeText(outputEl.value);
+      toast('Copié');
+    }catch{ toast('Copie impossible (iOS: sélectionne puis Copie)'); }
+  });
+
+  document.getElementById('btnDownload').addEventListener('click', () => {
+    const json = outputEl.value || JSON.stringify(exportObj());
+    const blob = new Blob([json], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'layout-shop.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    toast('Téléchargement lancé');
+  });
+
+  // Import
+  const fileImport = document.getElementById('fileImport');
+  document.getElementById('btnImport').addEventListener('click', () => fileImport.click());
+  fileImport.addEventListener('change', async () => {
+    const f = fileImport.files && fileImport.files[0];
+    if(!f) return;
+    try{
+      const txt = await f.text();
+      const obj = JSON.parse(txt);
+      if(!obj || !obj.data || !Array.isArray(obj.data)) throw new Error('format');
+      snapshot();
+      for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
+        const src = (obj.data[r] && obj.data[r][c]) ? obj.data[r][c] : null;
+        gridData[r][c] = src ? {
+          type: src.type || 'empty',
+          label: src.label || '',
+          binId: src.binId ?? null,
+          depth: (src.depth === 0 || src.depth) ? src.depth : null,
+          isHead: !!src.isHead,
+          direction: src.direction || null
+        } : DEFAULT_CELL();
+      }
+      renderAll();
+      setDirty(true);
+      toast('Import OK');
+    }catch{ toast('Import impossible (JSON invalide)'); }
+    finally{ fileImport.value = ''; }
+  });
+
+  document.getElementById('btnSaveLocal').addEventListener('click', () => {
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(exportObj())); setDirty(false); toast('Sauvegardé sur ce téléphone'); }
+    catch{ toast('Sauvegarde impossible'); }
+  });
+
+  document.getElementById('btnLoadLocal').addEventListener('click', () => {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return toast('Aucune sauvegarde');
+    try{
+      const obj = JSON.parse(raw);
+      if(!obj || !obj.data) throw new Error('format');
+      snapshot();
+      for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
+        const src = (obj.data[r] && obj.data[r][c]) ? obj.data[r][c] : null;
+        gridData[r][c] = src ? {
+          type: src.type || 'empty',
+          label: src.label || '',
+          binId: src.binId ?? null,
+          depth: (src.depth === 0 || src.depth) ? src.depth : null,
+          isHead: !!src.isHead,
+          direction: src.direction || null
+        } : DEFAULT_CELL();
+      }
+      renderAll();
+      setDirty(false);
+      toast('Chargé');
+    }catch{ toast('Erreur de chargement'); }
+  });
+
+  document.getElementById('btnUndo').addEventListener('click', undo);
+  document.getElementById('btnRedo').addEventListener('click', redo);
+
+  function changeZoom(delta){
+    const root = document.documentElement;
+    const current = getComputedStyle(root).getPropertyValue('--cell').trim().replace('px','');
+    let size = parseInt(current || '22', 10) + delta;
+    if(size < 10) size = 10; if(size > 60) size = 60;
+    root.style.setProperty('--cell', size + 'px');
+    toast('Zoom: ' + size + 'px');
+  }
+  document.getElementById('zoomIn').addEventListener('click', () => changeZoom(4));
+  document.getElementById('zoomOut').addEventListener('click', () => changeZoom(-4));
+
+  document.getElementById('btnHelp').addEventListener('click', () => {
+    alert('Raccourcis:\n1 BIN+\n2 BIN\n3 Texte\n4 Mur\n5 Porte\n6 Poste\n7 Vide\n\nCtrl/Cmd+Z Annuler\nCtrl/Cmd+Y Refaire\nCtrl/Cmd+S Sauver\nCtrl/Cmd+E Export');
+  });
+
+  window.addEventListener('keydown', (e) => {
+    const ctrl = e.ctrlKey || e.metaKey;
+    if(ctrl && e.key.toLowerCase()==='z'){ e.preventDefault(); undo(); }
+    if(ctrl && e.key.toLowerCase()==='y'){ e.preventDefault(); redo(); }
+    if(ctrl && e.key.toLowerCase()==='s'){ e.preventDefault(); document.getElementById('btnSaveLocal').click(); }
+    if(ctrl && e.key.toLowerCase()==='e'){ e.preventDefault(); document.getElementById('btnExport').click(); }
+
+    const map = {'1':'binrange','2':'bin','3':'label','4':'wall','5':'door','6':'work','7':'empty'};
+    if(map[e.key]) setTool(map[e.key]);
+  });
+
+  function updateOnline(){
+    const online = navigator.onLine;
+    onlineBadge.textContent = online ? '✅ En ligne' : '📴 Hors ligne';
+    onlineBadge.className = 'badge ' + (online ? 'ok' : 'warn');
+  }
+  window.addEventListener('online', updateOnline);
+  window.addEventListener('offline', updateOnline);
+  updateOnline();
+
+  // Install (Android/desktop prompt; iOS manual)
+  let deferredPrompt = null;
+  const btnInstall = document.getElementById('btnInstall');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    toast('Installation dispo: clique "Installer"');
+  });
+  btnInstall.addEventListener('click', async () => {
+    if(!deferredPrompt){
+      toast('iPhone: Safari → Partager → Sur l\'écran d\'accueil');
+      return;
+    }
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+  });
+
+  // SW
+  if('serviceWorker' in navigator){
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./service-worker.js')
+        .then(() => console.log('SW OK'))
+        .catch(err => console.warn('SW fail', err));
+    });
+  }
+
+  // Init
+  createGrid();
+  setDirty(true);
+  setTool('binrange');
+
+  // autoload
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const obj = JSON.parse(raw);
+      if(obj && obj.data){
+        for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
+          const src = (obj.data[r] && obj.data[r][c]) ? obj.data[r][c] : null;
+          gridData[r][c] = src ? {
+            type: src.type || 'empty',
+            label: src.label || '',
+            binId: src.binId ?? null,
+            depth: (src.depth === 0 || src.depth) ? src.depth : null,
+            isHead: !!src.isHead,
+            direction: src.direction || null
+          } : DEFAULT_CELL();
+        }
+        renderAll();
+        setDirty(false);
+        toast('Sauvegarde auto chargée');
+      }
+    }
+  }catch{}
+
+  </script>
+</body>
+</html>
