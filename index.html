@@ -35,6 +35,16 @@
       --c-wall: #6b7280;
       --c-door: #12b76a;
       --c-work: #f59e0b;
+      --c-office: #c084fc;
+      --c-charger: #22d3ee;
+      --c-electrical: #ef4444;
+      --c-shelving: #facc15;
+      --c-racking: #fb923c;
+      --c-road: #334155;
+      --c-roadstop: #dc2626;
+      --c-cafeteria: #f472b6;
+      --c-garage: #14b8a6;
+      --c-stairs: #94a3b8;
 
       /* zones default */
       --zA: rgba(26,99,255,0.18);
@@ -309,6 +319,16 @@
     .type-wall{ background: var(--c-wall); color:#fff; }
     .type-door{ background: var(--c-door); color:#062e1a; }
     .type-work{ background: var(--c-work); color:#1f2937; }
+    .type-office{ background: var(--c-office); color:#2e1065; }
+    .type-charger{ background: var(--c-charger); color:#083344; }
+    .type-electrical{ background: var(--c-electrical); color:#fff; }
+    .type-shelving{ background: var(--c-shelving); color:#422006; }
+    .type-racking{ background: var(--c-racking); color:#431407; }
+    .type-road{ background: var(--c-road); color:#f8fafc; }
+    .type-roadstop{ background: var(--c-roadstop); color:#fff; }
+    .type-cafeteria{ background: var(--c-cafeteria); color:#500724; }
+    .type-garage{ background: var(--c-garage); color:#042f2e; }
+    .type-stairs{ background: var(--c-stairs); color:#111827; }
 
     /* zones overlay */
     .cell.zoneA::after,.cell.zoneB::after,.cell.zoneC::after,.cell.zoneD::after{ content:''; position:absolute; inset:0; pointer-events:none; }
@@ -321,7 +341,17 @@
     .hide-bins .type-bin{ opacity: 0.12; }
     .hide-walls .type-wall{ opacity: 0.12; }
     .hide-doors .type-door{ opacity: 0.12; }
-    .hide-works .type-work{ opacity: 0.12; }
+    .hide-works .type-work,
+    .hide-works .type-office,
+    .hide-works .type-charger,
+    .hide-works .type-electrical,
+    .hide-works .type-shelving,
+    .hide-works .type-racking,
+    .hide-works .type-road,
+    .hide-works .type-roadstop,
+    .hide-works .type-cafeteria,
+    .hide-works .type-garage,
+    .hide-works .type-stairs{ opacity: 0.12; }
     .hide-zones .cell.zoneA::after,.hide-zones .cell.zoneB::after,.hide-zones .cell.zoneC::after,.hide-zones .cell.zoneD::after{ opacity: 0; }
 
     .xray .cell{ background: transparent !important; color: transparent !important; }
@@ -493,16 +523,36 @@
               <button class="btn" data-tool="wall">Mur</button>
               <button class="btn" data-tool="door">Porte</button>
               <button class="btn" data-tool="work">Poste</button>
+              <button class="btn" data-tool="office">Bureau</button>
+              <button class="btn" data-tool="charger">Chargeur</button>
+              <button class="btn" data-tool="electrical">Local électrique</button>
+              <button class="btn" data-tool="shelving">Shelving</button>
+              <button class="btn" data-tool="racking">Racking</button>
+              <button class="btn" data-tool="road">Route</button>
+              <button class="btn" data-tool="roadstop">Intersection + 🛑</button>
+              <button class="btn" data-tool="cafeteria">Cafétéria</button>
+              <button class="btn" data-tool="garage">Porte de garage</button>
+              <button class="btn" data-tool="stairs">Escalier</button>
               <button class="btn" data-tool="empty">Vide</button>
+            </div>
+
+            <div class="field">
+              <label>Occupation de case (pour les ajouts)</label>
+              <select id="cellFraction">
+                <option value="1" selected>Case entière</option>
+                <option value="0.5">1/2 case</option>
+                <option value="0.3333333333">1/3 case</option>
+                <option value="0.25">1/4 case</option>
+              </select>
             </div>
 
             <div style="height:10px"></div>
 
             <div class="switch"><div>Peindre en glissant<br><small>Appuie + glisse pour remplir</small></div><input type="checkbox" id="paintDrag" checked /></div>
             <div style="height:8px"></div>
-            <div class="switch"><div>Mode navigation (défaut)
+            <div class="switch"><div>Mode navigation
               <br><small>ON = bouger la grille, OFF = modifier</small></div>
-              <input type="checkbox" id="navMode" checked />
+              <input type="checkbox" id="navMode" />
             </div>
 
             <div style="height:8px"></div>
@@ -548,7 +598,7 @@
             <div style="height:8px"></div>
             <div class="switch"><div>Filtre Porte<br><small>Masquer/atténuer</small></div><input type="checkbox" id="fDoors" /></div>
             <div style="height:8px"></div>
-            <div class="switch"><div>Filtre Poste<br><small>Masquer/atténuer</small></div><input type="checkbox" id="fWorks" /></div>
+            <div class="switch"><div>Filtre aménagements<br><small>Poste, route, racking, etc.</small></div><input type="checkbox" id="fWorks" /></div>
             <div style="height:8px"></div>
             <div class="switch"><div>Masquer zones<br><small>Retire les overlays</small></div><input type="checkbox" id="fZones" /></div>
             <div style="height:8px"></div>

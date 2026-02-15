@@ -8,7 +8,8 @@ export const createDefaultCell = () => ({
   depth: null,
   isHead: false,
   direction: null,
-  zone: ''
+  zone: '',
+  sizeFraction: 1
 });
 
 export const createEmptyGrid = (rows = ROWS, cols = COLS) => (
