@@ -40,6 +40,7 @@ const dirtyBadge = document.getElementById('dirtyBadge');
 const onlineBadge = document.getElementById('onlineBadge');
 const toastEl = document.getElementById('toast');
 const zoneSelect = document.getElementById('zoneSelect');
+const cellFractionEl = document.getElementById('cellFraction');
 
 // Layout background
 const bgEl = document.getElementById('bgLayout');
@@ -104,8 +105,51 @@ const ZONES_KEY = 'dl_zonenames_v9';
 // Mapping LOCATION -> TYPE (import Excel)
 const LOCATION_TYPE_MAP = {"L3A02": "P2", "L3A04": "P2", "L3A06": "P2", "L3A08": "P3", "L3A10": "P7", "L3A12": "P7", "L3A14": "P7", "L3A16": "P7", "L3A18": "P7", "L3A20": "P7", "L3A22": "P7", "L3A24": "P7", "L3A26": "P7", "L3A28": "P7", "L3A30": "P7", "L3A32": "P7", "L3A34": "P7", "L3A36": "P7", "L3A38": "P7", "L3A40": "P7", "L3A42": "P7", "L3A44": "P7", "L3A46": "P6", "L3A48": "P6", "L3A50": "P6", "L3A52": "P6", "L3A54": "P6", "L3A56": "P7", "L3A58": "P7", "L3A60": "P7", "L3A62": "P7", "L3A64": "P7", "L3A66": "P7", "L3A68": "P7", "L3A70": "P7", "L3A72": "P7", "L3A74": "P7", "L3A76": "P7", "L3A78": "P7", "L3A80": "P7", "L3A82": "P7", "L3A84": "P7", "L3A86": "P7", "L3A88": "P5", "L3A90": "P3", "L3A92": "P3", "L3A94": "P3", "L3A96": "P3", "L3A01": "P4", "L3A03": "P4", "L3A05": "P4", "L3A07": "P4", "L3A09": "P4", "L3A11": "P4", "L3A13": "P4", "L3A15": "P4", "L3A17": "P4", "L3A19": "P4", "L3A21": "P4", "L3A23": "P4", "L3A25": "P4", "L3A27": "P4", "L3A29": "P4", "L3A31": "P4", "L3A33": "P4", "L3A35": "P4", "L3A37": "P4", "L3A39": "P4", "L3A41": "P4", "L3A43": "P4", "L3A45": "P4", "L3A47": "P4", "L3A49": "P4", "L3A51": "P4", "L3A53": "P4", "L3A55": "P4", "L3A57": "P4", "L3A59": "P4", "L3A61": "P4", "L3A63": "P4", "L3A65": "P4", "L3A67": "P4", "L3A69": "P4", "L3A71": "P4", "L3A73": "P4", "L3A75": "P4", "L3A77": "P4", "L3A79": "P4", "L3A81": "P4", "L3B02": "P2", "L3B04": "P2", "L3B06": "P2", "L3B08": "P2", "L3B10": "P2", "L3B12": "P2", "L3B14": "P2", "L3B16": "P2", "L3B18": "P2", "L3B20": "P2", "L3B22": "P2", "L3B24": "P2", "L3B26": "P2", "L3B28": "P2", "L3B30": "P2", "L3B32": "P2", "L3B34": "P2", "L3B36": "P2", "L3B38": "P2", "L3B40": "P2", "L3B42": "P2", "L3B44": "P2", "L3B46": "P2", "L3B48": "P2", "L3B50": "P2", "L3B52": "P2", "L3B54": "P2", "L3B56": "P2", "L3B58": "P2", "L3B60": "P2", "L3B62": "P2", "L3B64": "P2", "L3B66": "P2", "L3B68": "P2", "L3B70": "P2", "L3B72": "P2", "L3B74": "P2", "L3B76": "P2", "L3B78": "P2", "L3B80": "P2", "L3B01": "P2", "L3B03": "P2", "L3B05": "P2", "L3B07": "P2", "L3B09": "P2", "L3B11": "P2", "L3B13": "P2", "L3B15": "P2", "L3B17": "P2", "L3B19": "P2", "L3B21": "P2", "L3B23": "P2", "L3B25": "P2", "L3B27": "P2", "L3B29": "P2", "L3B31": "P2", "L3B33": "P2", "L3B35": "P2", "L3B37": "P2", "L3B39": "P2", "L3B41": "P2", "L3B43": "P2", "L3B45": "P2", "L3B47": "P2", "L3B49": "P2", "L3B51": "P2", "L3B53": "P2", "L3B55": "P2", "L3B57": "P2", "L3B59": "P2", "L3B61": "P2", "L3B63": "P2", "L3B65": "P2", "L3B67": "P2", "L3B69": "P2", "L3B71": "P2", "L3B73": "P2", "L3C02": "P4", "L3C04": "P4", "L3C06": "P4", "L3C08": "P4", "L3C10": "P4", "L3C12": "P4", "L3C14": "P4", "L3C16": "P4", "L3C18": "P4", "L3C20": "P4", "L3C22": "P4", "L3C24": "P4", "L3C26": "P4", "L3C28": "P4", "L3C30": "P4", "L3C32": "P4", "L3C34": "P4", "L3C36": "P4", "L3C38": "P4", "L3C40": "P4", "L3C42": "P4", "L3C44": "P4", "L3C46": "P4", "L3C48": "P4", "L3C50": "P4", "L3C52": "P4", "L3C54": "P4", "L3C56": "P4", "L3C58": "P4", "L3C60": "P4", "L3C62": "P4", "L3C64": "P4", "L3C66": "P4", "L3C68": "P4", "L3C70": "P4", "L3C72": "P4", "L3C74": "P4", "L3C76": "P4", "L3C01": "P1", "L3C03": "P1", "L3C05": "P1", "L3C07": "P1", "L3C09": "P1", "L3C11": "P1", "L3C13": "P1", "L3C15": "P1", "L3C17": "P1", "L3C19": "P1", "L3C21": "P1", "L3C23": "P1", "L3C25": "P1", "L3C27": "P1", "L3C29": "P1", "L3C31": "P1", "L3C33": "P1", "L3C35": "P1", "L3C37": "P1", "L3C39": "P1", "L3C41": "P1", "L3C43": "P1", "L3C45": "P1", "L3C47": "P1", "L3C49": "P1", "L3C51": "P1", "L3C53": "P1", "L3C55": "P1", "L3C57": "P1", "L3C59": "P1", "L3C61": "P1", "L3C63": "P1", "L3C65": "P1", "L3C67": "P1", "L3C69": "P1", "L3D00A": "P7", "L3D00B": "P7", "L3D00C": "6 X P1", "L3D02": "P1", "L3D04": "P1", "L3D06": "P1", "L3D08": "P1", "L3D10": "P1", "L3D12": "P1", "L3D14": "P1", "L3D16": "P1", "L3D18": "P1", "L3D20": "P1", "L3D22": "P1", "L3D24": "P1", "L3D26": "P1", "L3D28": "P1", "L3D30": "P1", "L3D32": "P1", "L3D34": "P1", "L3D36": "P1", "L3D38": "P1", "L3D40": "P1", "L3D42": "P1", "L3D44": "P1", "L3D46": "P1", "L3D48": "P1", "L3D50": "P1", "L3D52": "P1", "L3D54": "P1", "L3D56": "P1", "L3D58": "P1", "L3D60": "P1", "L3D62": "P1", "L3D64": "P1", "L3D66": "P1", "L3D68": "P1", "L3D70": "P1", "L3D01": "P4", "L3D03": "P3", "L3D05": "P3", "L3D07": "P3", "L3D09": "P3", "L3D11": "P3", "L3D13": "P3", "L3D15": "P3", "L3D17": "P3", "L3D19": "P3", "L3D21": "P3", "L3D23": "P3", "L3D25": "P2", "L3D27": "P2", "L3D29": "P2", "L3D31": "P2", "L3D33": "P2", "L3D35": "P2", "L3D37": "P2", "L3D39": "P2", "L3D41": "P2", "L3D43": "P3", "L3D45": "P3", "L3D47": "P3", "L3D49": "P3", "L3D51": "P3", "L3D53": "P3", "L3D55": "P3", "L3D57": "P3", "L3D59": "P3", "L3D61": "P3", "L3D63": "P3", "L3D65": "P3", "L3D67": "P3", "L2A01": "Temporaire 1", "L2A03": "Temporaire 2", "L2A05": "Temporaire 3", "L2A07": "P7", "L2A09": "P7", "L2A11": "P7", "L2A13": "P7", "L2A15": "P7", "L2A17": "P7", "L2A19": "P7", "L2A21": "P7", "L2A23": "P7", "L2A25": "P7", "L2A27": "P7", "L2A29": "P7", "L2A31": "P7", "L2A33": "P7", "L2A35": "P7", "L2A02": "P2", "L2A04": "P2", "L2A06": "P2", "L2A08": "P2", "L2A10": "P2", "L2A12": "P2", "L2A14": "P2", "L2A16": "P2", "L2A18": "P2", "L2A20": "P2", "L2B02": "P1", "L2B04": "P1", "L2B06": "P1", "L2B08": "P1", "L2B10": "P1", "L2B12": "P1", "L2B14": "P1", "L2B16": "P1", "L2B18": "P1", "L2B20": "P1", "L2B22": "P5", "L2B24": "P5", "L2B26": "P5", "L2B28": "P5", "L2B30": "P5", "L2B32": "P5", "L2B34": "P5", "L2B36": "P5", "L2B38": "P1", "L2B40": "P1", "L2B42": "P1", "L2B44": "P1", "L2B46": "P1", "L2B48": "P1", "L2B50": "P1", "L2B52": "P1", "L2B54": "P1", "L2B56": "P1", "L2B58": "P1", "L2I01H": "MAGASIN", "L2I03E": "MAGASIN", "L2I03G": "MAGASIN", "L2I04A": "MAGASIN", "L2I04B": "MAGASIN", "L2I04D": "MAGASIN", "L2I04F": "MAGASIN", "L2I04H": "MAGASIN", "L2I04I": "MAGASIN", "L2I05A": "MAGASIN", "L2I05B": "MAGASIN", "L2I05C": "MAGASIN", "L2I05D": "MAGASIN", "L2I05E": "MAGASIN", "L2I05F": "MAGASIN", "L2I05G": "MAGASIN", "L2I05H": "MAGASIN", "L2I05I": "MAGASIN", "L2I06A": "MAGASIN", "L2I06B": "MAGASIN", "L2I06D": "MAGASIN", "L2I06F": "MAGASIN", "L2I06H": "MAGASIN", "L2I07B": "MAGASIN", "L2I07C": "MAGASIN", "L2I07D": "MAGASIN", "L2I07E": "MAGASIN", "L2I07F": "MAGASIN", "L2I07G": "MAGASIN", "L2I07H": "MAGASIN", "L2I07I": "MAGASIN", "L2I08A": "MAGASIN", "L2I08B": "MAGASIN", "L2I08C": "MAGASIN", "L2I08D": "MAGASIN", "L2I08F": "MAGASIN", "L2I08H": "MAGASIN", "L2I09A": "MAGASIN", "L2I09B": "MAGASIN", "L2I09C": "MAGASIN", "L2I09D": "MAGASIN", "L2I09F": "MAGASIN", "L2I09G": "MAGASIN", "L2I09H": "MAGASIN", "L2I09I": "MAGASIN", "L2I10A": "MAGASIN", "L2I10B": "MAGASIN", "L2I10D": "MAGASIN", "L2I10E": "MAGASIN", "L2I10F": "MAGASIN", "L2I10H": "MAGASIN", "L2I11A": "MAGASIN", "L2I11B": "MAGASIN", "L2I11C": "MAGASIN", "L2I11D": "MAGASIN", "L2I11E": "MAGASIN", "L2I11F": "MAGASIN", "L2I11G": "MAGASIN", "L2I11H": "MAGASIN", "L2I11I": "MAGASIN", "L2I12A": "MAGASIN", "L2I12B": "MAGASIN", "L2I12D": "MAGASIN", "L2I12F": "MAGASIN", "L2I12H": "MAGASIN", "L2JRACK": "RACKING", "L2J01H": "RACKING", "L2J02": "RACKING", "L2J03C": "RACKING", "L2J04A": "RACKING", "L2J04B": "RACKING", "L2J05H": "RACKING", "L2J06A": "RACKING", "L2J06C": "RACKING", "L2J07F": "RACKING", "L2J07H": "RACKING", "L2J09H": "RACKING", "L2J11C": "RACKING", "L2J11H": "RACKING", "L2J13B": "RACKING", "L2J13C": "RACKING"};
 
-const CELL_INCH = 48;
-const CELL_FEET = 4;
+const CELL_INCH = 50;
+const CELL_FEET = +(CELL_INCH / 12).toFixed(4);
+
+const PLAN_TOOLS = new Set([
+  'work', 'office', 'charger', 'electrical', 'shelving', 'racking', 'road', 'roadstop', 'cafeteria', 'garage', 'stairs'
+]);
+
+const TYPE_COLORS = {
+  bin: '#111827',
+  wall: '#6b7280',
+  door: '#12b76a',
+  work: '#f59e0b',
+  office: '#c084fc',
+  charger: '#22d3ee',
+  electrical: '#ef4444',
+  shelving: '#facc15',
+  racking: '#fb923c',
+  road: '#334155',
+  roadstop: '#dc2626',
+  cafeteria: '#f472b6',
+  garage: '#14b8a6',
+  stairs: '#94a3b8'
+};
+
+const FRACTION_LABELS = {
+  1: 'entière',
+  0.5: '1/2',
+  0.3333333333: '1/3',
+  0.25: '1/4'
+};
+
+function selectedFraction(){
+  const value = Number.parseFloat(cellFractionEl?.value || '1');
+  if([1, 0.5, 0.3333333333, 0.25].some((v) => Math.abs(v - value) < 0.0001)) return value;
+  return 1;
+}
+
+function fractionLabel(value){
+  const key = Object.keys(FRACTION_LABELS).find((k) => Math.abs(Number(k) - Number(value)) < 0.0001);
+  return key ? FRACTION_LABELS[key] : 'entière';
+}
+
+function typeColor(type){
+  return TYPE_COLORS[type] || null;
+}
 
 // Capacité palettes (P1..P7)
 const P_CAPACITY = {
@@ -145,6 +189,20 @@ function restoreFromSnapshot(snap){
     if(gridData[r][c].zone === undefined) gridData[r][c].zone = '';
   }
   renderAll();
+}
+
+function hydrateCell(src){
+  if(!src) return DEFAULT_CELL();
+  return {
+    type: src.type || 'empty',
+    label: src.label || '',
+    binId: src.binId ?? null,
+    depth: (src.depth === 0 || src.depth) ? src.depth : null,
+    isHead: !!src.isHead,
+    direction: src.direction || null,
+    zone: src.zone || '',
+    sizeFraction: Number(src.sizeFraction) > 0 ? Number(src.sizeFraction) : 1
+  };
 }
 
 function undo(){
@@ -227,6 +285,7 @@ function updateCoords(row, col){
   const d = gridData[row][col];
   const parts = [`L${row+1} C${col+1}`, d.type];
   if(d.binId) parts.push('binId=' + d.binId);
+  if(d.sizeFraction && d.sizeFraction < 1) parts.push('surface=' + fractionLabel(d.sizeFraction));
   if(d.depth !== null && d.depth !== undefined) parts.push('depth=' + d.depth);
   if(d.isHead) parts.push('head');
   if(d.direction) parts.push('dir=' + d.direction);
@@ -269,11 +328,13 @@ function handleSimpleToolClick(row, col, tool){
       };
     }
   } else if(tool === 'bin'){
-    patch = { type: 'bin', binId: null, depth: null, isHead: false, direction: null, label: current.label || '' };
+    patch = { type: 'bin', binId: null, depth: null, isHead: false, direction: null, label: current.label || '', sizeFraction: 1 };
   } else if(tool === 'empty'){
     layoutState.applyOperation({ type: 'CLEAR_CELL', position: { row, col } });
-  } else if(tool === 'wall' || tool === 'door' || tool === 'work'){
-    patch = { type: tool, binId: null, depth: null, isHead: false, direction: null, label: '' };
+  } else if(tool === 'wall' || tool === 'door' || PLAN_TOOLS.has(tool)){
+    const fraction = PLAN_TOOLS.has(tool) ? selectedFraction() : 1;
+    const toolLabel = tool === 'roadstop' ? '🛑' : '';
+    patch = { type: tool, binId: null, depth: null, isHead: false, direction: null, label: toolLabel, sizeFraction: fraction };
   }
 
   if(patch){
@@ -322,7 +383,7 @@ function handleBinRangeClick(row, col){
     // preview temporary
     for(const pos of cells){
       const d = gridData[pos.row][pos.col];
-      d.type = 'bin'; d.binId=null; d.depth=null; d.isHead=false; d.direction=null; d.label='';
+      d.type = 'bin'; d.binId=null; d.depth=null; d.isHead=false; d.direction=null; d.label=''; d.sizeFraction=1;
       applyCellVisual(gridEl.children[cellKey(pos.row,pos.col)], d);
     }
 
@@ -756,10 +817,8 @@ function exportPngBlob(){
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     const d = gridData[r][c];
     if(d.zone) fillCell(r,c, zmap[d.zone] || 'rgba(26,99,255,0.12)');
-    if(d.type==='bin') fillCell(r,c,'#111827');
-    if(d.type==='wall') fillCell(r,c,'#6b7280');
-    if(d.type==='door') fillCell(r,c,'#12b76a');
-    if(d.type==='work') fillCell(r,c,'#f59e0b');
+    const color = typeColor(d.type);
+    if(color) fillCell(r,c,color);
 
     if(d.label){
       ctx.font = 'bold 8px Arial';
@@ -800,15 +859,7 @@ fileImport.addEventListener('change', async () => {
     snapshot();
     for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
       const src = (obj.data[r] && obj.data[r][c]) ? obj.data[r][c] : null;
-      gridData[r][c] = src ? {
-        type: src.type || 'empty',
-        label: src.label || '',
-        binId: src.binId ?? null,
-        depth: (src.depth === 0 || src.depth) ? src.depth : null,
-        isHead: !!src.isHead,
-        direction: src.direction || null,
-        zone: src.zone || ''
-      } : DEFAULT_CELL();
+      gridData[r][c] = hydrateCell(src);
     }
     renderAll();
     setDirty(true);
@@ -834,15 +885,7 @@ document.getElementById('btnLoadLocal').addEventListener('click', () => {
     snapshot();
     for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
       const src = (obj.data[r] && obj.data[r][c]) ? obj.data[r][c] : null;
-      gridData[r][c] = src ? {
-        type: src.type || 'empty',
-        label: src.label || '',
-        binId: src.binId ?? null,
-        depth: (src.depth === 0 || src.depth) ? src.depth : null,
-        isHead: !!src.isHead,
-        direction: src.direction || null,
-        zone: src.zone || ''
-      } : DEFAULT_CELL();
+      gridData[r][c] = hydrateCell(src);
     }
     renderAll();
     setDirty(false);
@@ -1156,12 +1199,12 @@ function updateStats(){
     if(d.type==='bin') bins++;
     if(d.type==='wall') walls++;
     if(d.type==='door') doors++;
-    if(d.type==='work') works++;
+    if(PLAN_TOOLS.has(d.type)) works++;
     if(d.label) labeled++;
     if(d.zone==='A') zA++; if(d.zone==='B') zB++; if(d.zone==='C') zC++; if(d.zone==='D') zD++;
   }
   const sel = selection.size ? ` • sel:${selection.size}` : '';
-  statsEl.textContent = `BIN:${bins} Mur:${walls} Porte:${doors} Poste:${works} Labels:${labeled} | ${zoneName('A')}:${zA} ${zoneName('B')}:${zB} ${zoneName('C')}:${zC} ${zoneName('D')}:${zD}${sel}`;
+  statsEl.textContent = `BIN:${bins} Mur:${walls} Porte:${doors} Aménagements:${works} Labels:${labeled} | ${zoneName('A')}:${zA} ${zoneName('B')}:${zB} ${zoneName('C')}:${zC} ${zoneName('D')}:${zD}${sel}`;
 }
 
 // PDF Export (canvas pages -> embedded JPEG PDF)
@@ -1377,10 +1420,8 @@ async function drawPlanPage(){
   for(let r=0;r<ROWS;r++) for(let c0=0;c0<COLS;c0++){
     const d = gridData[r][c0];
     if(d.zone) fillCell(r,c0, zmap[d.zone] || 'rgba(26,99,255,0.12)');
-    if(d.type==='bin') fillCell(r,c0,'#111827');
-    if(d.type==='wall') fillCell(r,c0,'#6b7280');
-    if(d.type==='door') fillCell(r,c0,'#12b76a');
-    if(d.type==='work') fillCell(r,c0,'#f59e0b');
+    const color = typeColor(d.type);
+    if(color) fillCell(r,c0,color);
 
     if(d.isHead && d.label){
       pctx.font = 'bold 10px Arial';
@@ -1691,7 +1732,7 @@ function bwRefreshComputed(){
 
   const info=bwFullCode();
   const count=(binRangeState.cells && binRangeState.cells.length) ? binRangeState.cells.length : 0;
-  const ft=count*CELL_FEET;
+  const ft=(count*CELL_FEET).toFixed(2);
 
   if(info.ok){
     const base = info.zoneAbs + info.aisle + info.slot;
@@ -1702,7 +1743,7 @@ function bwRefreshComputed(){
   const t=normalizeType(bw.typeEl.value);
   const pr = /^P[1-7]$/.test(t) ? pRangeText(t) : '';
 
-  bw.computedEl.textContent = `Code: ${info.ok?info.code:'(incomplet)'} • Cases: ${count} (≈ ${ft} pieds) • Type: ${t} ${pr?('('+pr+')'):''}`;
+  bw.computedEl.textContent = `Code: ${info.ok?info.code:'(incomplet)'} • Cases: ${count} (50" x 50", ≈ ${ft} pieds) • Type: ${t} ${pr?('('+pr+')'):''}`;
   bw.validateBtn.disabled = !(info.ok && binRangeState.head && count>=2);
 }
 
@@ -1761,6 +1802,7 @@ function bwValidateAndCreate(){
     d.pIndex=i+1;
     d.pCount=ordered.length;
     d.pType=type;
+    d.sizeFraction=1;
     applyCellVisual(gridEl.children[cellKey(pos.row,pos.col)], d);
   }
 
@@ -1779,7 +1821,7 @@ createGrid();
   bwShow(1);
 setDirty(true);
 setTool('binrange');
-if(navModeEl){ toast('Navigation ON'); }
+if(navModeEl){ toast('Mode visuel ON'); }
 updateStats();
 refreshBinList();
 
@@ -1791,15 +1833,7 @@ try{
     if(obj && obj.data){
       for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
         const src = (obj.data[r] && obj.data[r][c]) ? obj.data[r][c] : null;
-        gridData[r][c] = src ? {
-          type: src.type || 'empty',
-          label: src.label || '',
-          binId: src.binId ?? null,
-          depth: (src.depth === 0 || src.depth) ? src.depth : null,
-          isHead: !!src.isHead,
-          direction: src.direction || null,
-          zone: src.zone || ''
-        } : DEFAULT_CELL();
+        gridData[r][c] = hydrateCell(src);
       }
       renderAll();
       setDirty(false);
