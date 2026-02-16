@@ -7,7 +7,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="DL Layout" />
-  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="manifest" href="manifest.webmanifest" />
   <title>Damour Logistique — SHOP Layout PRO (V9)</title>
 
@@ -41,6 +41,7 @@
       --zB: rgba(18,183,106,0.18);
       --zC: rgba(245,158,11,0.22);
       --zD: rgba(255,77,79,0.16);
+      --zL2: rgba(155,81,224,0.20);
     }
 
     *{ box-sizing:border-box; }
@@ -211,6 +212,48 @@
       gap: 10px;
     }
 
+    .toolQuickBar{
+      display:flex;
+      gap:8px;
+      padding: 0 12px 8px 12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .toolQuickBar .iconBtn{
+      min-width:42px;
+      width:42px;
+      height:42px;
+      border-radius:12px;
+      border:1px solid var(--border);
+      background: rgba(17,24,39,0.8);
+      color: var(--text);
+      font-size:18px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .toolQuickBar .iconBtn.active{
+      border-color: rgba(0,180,255,0.55);
+      background: linear-gradient(135deg, rgba(11,61,145,0.55), rgba(26,99,255,0.22));
+    }
+    .toolOptionsBar{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding: 0 12px 8px 12px;
+      overflow:auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    .toolOptionsBar .opt{
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      font-weight: 900;
+      color: var(--muted);
+      background: rgba(17,24,39,0.75);
+      white-space: nowrap;
+    }
+
     .switch{
       display:flex;
       align-items:center;
@@ -311,18 +354,30 @@
     .type-work{ background: var(--c-work); color:#1f2937; }
 
     /* zones overlay */
-    .cell.zoneA::after,.cell.zoneB::after,.cell.zoneC::after,.cell.zoneD::after{ content:''; position:absolute; inset:0; pointer-events:none; }
+    .cell.zoneA::after,.cell.zoneB::after,.cell.zoneC::after,.cell.zoneD::after,.cell.zoneL2::after{ content:''; position:absolute; inset:0; pointer-events:none; }
     .cell.zoneA::after{ background: var(--zA); }
     .cell.zoneB::after{ background: var(--zB); }
     .cell.zoneC::after{ background: var(--zC); }
     .cell.zoneD::after{ background: var(--zD); }
+    .cell.zoneL2::after{ background: var(--zL2); }
+
+    .cell.zonePreview::before{
+      content:'';
+      position:absolute;
+      inset:2px;
+      border: 1px dashed rgba(255,255,255,0.8);
+      border-radius: 4px;
+      background: rgba(155,81,224,0.15);
+      pointer-events:none;
+      z-index: 2;
+    }
 
     /* filter / x-ray */
     .hide-bins .type-bin{ opacity: 0.12; }
     .hide-walls .type-wall{ opacity: 0.12; }
     .hide-doors .type-door{ opacity: 0.12; }
     .hide-works .type-work{ opacity: 0.12; }
-    .hide-zones .cell.zoneA::after,.hide-zones .cell.zoneB::after,.hide-zones .cell.zoneC::after,.hide-zones .cell.zoneD::after{ opacity: 0; }
+    .hide-zones .cell.zoneA::after,.hide-zones .cell.zoneB::after,.hide-zones .cell.zoneC::after,.hide-zones .cell.zoneD::after,.hide-zones .cell.zoneL2::after{ opacity: 0; }
 
     .xray .cell{ background: transparent !important; color: transparent !important; }
     .xray .cell::after{ opacity: 0 !important; }
@@ -470,7 +525,7 @@
 <header>
   <div class="top">
     <div class="brand">
-      <img src="branding/dl-cube-512.png" alt="DL" />
+      <img src="icon-512.png" alt="DL" />
       <div class="brandTxt">
         <div class="t">Damour Logistique <span style="opacity:.7">• V9</span></div>
         <div class="s">SHOP Layout PRO — Rapport de plan plancher</div>
@@ -480,6 +535,19 @@
     <div class="menuBar">
       <span class="badge" id="onlineBadge">⏳</span>
       <span class="badge" id="dirtyBadge">Non sauvegardé</span>
+      <span class="badge" id="appModeBadge">Mode: création</span>
+
+      <details class="menu" id="menuModes">
+        <summary>🧭 Modes</summary>
+        <div class="dropdown">
+          <div class="dropHead"><div class="title">Modes principaux</div><button class="btn small ghost" data-close="menuModes">Fermer</button></div>
+          <div class="dropBody">
+            <button class="btn" data-app-mode="creation">🛠️ Création<br><small>Créer et modifier les plans</small></button>
+            <button class="btn" data-app-mode="view">👁️ Visionnement<br><small>Consultation seulement</small></button>
+            <button class="btn" data-app-mode="connect">🔗 Connecté<br><small>Suivi temps réel (préparation)</small></button>
+          </div>
+        </div>
+      </details>
 
       <details class="menu" id="menuTools">
         <summary>🧰 Outils</summary>
@@ -494,14 +562,15 @@
               <button class="btn" data-tool="door">Porte</button>
               <button class="btn" data-tool="work">Poste</button>
               <button class="btn" data-tool="empty">Vide</button>
+              <button class="btn neon" data-tool="zonebuild">Zone L2 guidée</button>
             </div>
 
             <div style="height:10px"></div>
 
             <div class="switch"><div>Peindre en glissant<br><small>Appuie + glisse pour remplir</small></div><input type="checkbox" id="paintDrag" checked /></div>
             <div style="height:8px"></div>
-            <div class="switch"><div>Mode navigation (défaut)
-              <br><small>ON = bouger la grille, OFF = modifier</small></div>
+            <div class="switch"><div>Mode navigation
+              <br><small>Actif en Visionnement / Connecté</small></div>
               <input type="checkbox" id="navMode" checked />
             </div>
 
@@ -520,9 +589,11 @@
                 <option value="B">B — Zone B</option>
                 <option value="C">C — Zone C</option>
                 <option value="D">D — Zone D</option>
+                <option value="L2">L2 — Zone opérationnelle</option>
               </select>
             </div>
             <button class="btn neon" id="btnApplyZone">🎯 Appliquer zone à la sélection</button>
+            <button class="btn" id="btnOpenBatchBins">🧮 Création multiple BIN (L3A01→L3A59)</button>
 
             <div style="height:10px"></div>
             <div class="field">
@@ -695,6 +766,23 @@
     </div>
   </div>
 
+  <div class="toolQuickBar" id="toolQuickBar">
+    <button class="iconBtn active" title="BIN+" data-tool="binrange">📦</button>
+    <button class="iconBtn" title="BIN" data-tool="bin">🧱</button>
+    <button class="iconBtn" title="Texte" data-tool="label">🏷️</button>
+    <button class="iconBtn" title="Mur" data-tool="wall">🧱</button>
+    <button class="iconBtn" title="Porte" data-tool="door">🚪</button>
+    <button class="iconBtn" title="Poste" data-tool="work">👷</button>
+    <button class="iconBtn" title="Vide" data-tool="empty">🧽</button>
+    <button class="iconBtn" title="Zone L2" data-tool="zonebuild">🟪</button>
+  </div>
+
+  <div class="toolOptionsBar" id="toolOptionsBar">
+    <span class="opt" id="toolOptionText">Options outil: BIN+ guidé</span>
+    <label class="opt"><input type="checkbox" id="paintDragQuick" checked /> Glisser</label>
+    <label class="opt"><input type="checkbox" id="selectModeQuick" /> Sélection</label>
+  </div>
+
   <div class="hint" id="hint">
     <span id="hintText">Mode : Création de BIN – clic 1 = première extrémité.</span>
     <span class="badge" id="toolBadge">outil: binrange</span>
@@ -733,6 +821,29 @@
 </div>
 
 <div id="toast"></div>
+
+<div id="batchBinPanel" style="display:none; position:fixed; z-index:85; right:12px; bottom:12px; width:min(94vw,360px); background:var(--panel2); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:12px;">
+  <div class="row" style="justify-content:space-between; margin-bottom:8px;"><strong>Création multiple BIN</strong><button class="btn small ghost" id="batchClose">Fermer</button></div>
+  <div class="field"><label>Préfixe</label><input id="batchPrefix" value="L3A" /></div>
+  <div class="row">
+    <div class="field" style="flex:1;"><label>Début</label><input id="batchStart" value="01" maxlength="2" /></div>
+    <div class="field" style="flex:1;"><label>Fin</label><input id="batchEnd" value="59" maxlength="2" /></div>
+  </div>
+  <div class="field"><label>Type</label><select id="batchType"><option value="P7" selected>P7</option><option value="P6">P6</option><option value="P5">P5</option></select></div>
+  <div class="badge" style="width:100%; margin-bottom:8px;">Sélectionne une zone (rectangle) puis applique.</div>
+  <button class="btn primary" id="batchApply">Insérer dans la sélection</button>
+</div>
+
+<div id="zoneBuilderPanel" style="display:none; position:fixed; z-index:85; left:12px; bottom:12px; width:min(94vw,340px); background:var(--panel2); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow); padding:12px;">
+  <div class="row" style="justify-content:space-between; margin-bottom:8px;"><strong>Création zone</strong><span class="badge" id="zoneBuildStep">1/2</span></div>
+  <div class="field"><label>Zone à créer</label><select id="zoneBuilderSelect"><option value="L2" selected>L2</option></select></div>
+  <div class="badge" id="zoneBuilderInfo" style="width:100%; margin-bottom:8px; justify-content:center;">Clique la 1ère case</div>
+  <div class="row" style="gap:6px;">
+    <button class="btn" id="zoneUndo" style="flex:1;">↶ Retour</button>
+    <button class="btn primary" id="zoneConfirm" style="flex:1;">✅ Confirmer</button>
+    <button class="btn danger" id="zoneCancel" style="flex:1;">✖ Annuler</button>
+  </div>
+</div>
 
 <div id="binWizard" aria-live="polite">
   <div class="bwTop">
@@ -853,6 +964,12 @@ const dirtyBadge = document.getElementById('dirtyBadge');
 const onlineBadge = document.getElementById('onlineBadge');
 const toastEl = document.getElementById('toast');
 const zoneSelect = document.getElementById('zoneSelect');
+const appModeBadge = document.getElementById('appModeBadge');
+const toolOptionText = document.getElementById('toolOptionText');
+const paintDragQuickEl = document.getElementById('paintDragQuick');
+const selectModeQuickEl = document.getElementById('selectModeQuick');
+const batchBinPanel = document.getElementById('batchBinPanel');
+const zoneBuilderPanel = document.getElementById('zoneBuilderPanel');
 
 // Layout background
 const bgEl = document.getElementById('bgLayout');
@@ -893,6 +1010,8 @@ let lastSelected = null;
 let isPainting = false;
 let dirty = false;
 let currentTool = 'binrange';
+let currentAppMode = 'creation';
+let zoneBuildState = {phase:'idle', start:null, end:null, cells:[]};
 
 // Selection
 let isSelecting = false;
@@ -1057,15 +1176,50 @@ function redo(){
   setDirty(true);
 }
 
+function updateToolQuickBar(){
+  document.querySelectorAll('#toolQuickBar .iconBtn[data-tool]').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-tool') === currentTool);
+  });
+}
+
+function setAppMode(mode){
+  currentAppMode = mode;
+  const labels = {creation:'création', view:'visionnement', connect:'connecté'};
+  appModeBadge.textContent = 'Mode: ' + (labels[mode] || mode);
+  if(mode === 'creation'){
+    navModeEl.checked = false;
+    setHint('Mode création: édition complète active.');
+  } else if(mode === 'view'){
+    navModeEl.checked = true;
+    setHint('Mode visionnement: lecture seule.');
+  } else {
+    navModeEl.checked = true;
+    setHint('Mode connecté: suivi temps réel (édition verrouillée).');
+  }
+  closeMenu('menuModes');
+  toast('Mode ' + (labels[mode] || mode));
+}
+
 function setTool(tool){
   currentTool = tool;
   toolBadge.textContent = 'outil: ' + tool;
+  toolOptionText.textContent = 'Options outil: ' + tool;
   closeMenu('menuTools');
   if(tool === 'binrange') setHint('Mode : Création de BIN – clic 1 = première extrémité.');
+  else if(tool === 'zonebuild') setHint('Zone L2 : clique départ puis fin, ensuite confirme.');
   else setHint('Mode : outil simple (mur, porte, poste, BIN, texte...).');
-  resetBinRangeState();
+  if(tool !== 'binrange') resetBinRangeState();
+  if(tool === 'zonebuild'){
+    zoneBuilderPanel.style.display = 'block';
+    zoneBuildReset();
+  } else {
+    zoneBuilderPanel.style.display = 'none';
+    clearZonePreview();
+  }
+  if(currentAppMode !== 'creation') setAppMode('creation');
   if(navModeEl && navModeEl.checked){ navModeEl.checked = false; toast('Édition ON'); }
- toast('Outil: ' + tool);
+  updateToolQuickBar();
+  toast('Outil: ' + tool);
 }
 
 function setHint(text){ hintText.textContent = text; }
@@ -1073,6 +1227,42 @@ function setHint(text){ hintText.textContent = text; }
 function resetBinRangeState(){
   binRangeState = { phase: 'idle', start: null, end: null, cells: [], head: null };
   if(currentTool === 'binrange') setHint('Mode : Création de BIN – clic 1 = première extrémité.');
+}
+
+function clearZonePreview(){
+  for(const el of gridEl.children) el.classList.remove('zonePreview');
+}
+
+function zoneBuildReset(){
+  zoneBuildState = {phase:'awaitStart', start:null, end:null, cells:[]};
+  document.getElementById('zoneBuildStep').textContent = '1/2';
+  document.getElementById('zoneBuilderInfo').textContent = 'Clique la 1ère case';
+  clearZonePreview();
+}
+
+function computeRectCells(a,b){
+  const cells=[];
+  const r1=Math.min(a.row,b.row), r2=Math.max(a.row,b.row);
+  const c1=Math.min(a.col,b.col), c2=Math.max(a.col,b.col);
+  for(let r=r1;r<=r2;r++) for(let c=c1;c<=c2;c++) cells.push({row:r,col:c});
+  return cells;
+}
+
+function handleZoneBuildClick(row,col){
+  if(zoneBuildState.phase === 'awaitStart'){
+    zoneBuildState.start = {row,col};
+    zoneBuildState.phase = 'awaitEnd';
+    document.getElementById('zoneBuildStep').textContent = '2/2';
+    document.getElementById('zoneBuilderInfo').textContent = 'Clique la 2e case pour délimiter la zone';
+    clearZonePreview();
+    gridEl.children[cellKey(row,col)]?.classList.add('zonePreview');
+    return;
+  }
+  zoneBuildState.end = {row,col};
+  zoneBuildState.cells = computeRectCells(zoneBuildState.start, zoneBuildState.end);
+  clearZonePreview();
+  for(const p of zoneBuildState.cells) gridEl.children[cellKey(p.row,p.col)]?.classList.add('zonePreview');
+  document.getElementById('zoneBuilderInfo').textContent = `Prévisualisation: ${zoneBuildState.cells.length} cases`;
 }
 
 function cellKey(r,c){ return r*COLS + c; }
@@ -1144,8 +1334,16 @@ function onCellAction(cell, isPrimary){
   cell.classList.add('highlight');
   lastSelected = cell;
 
+  if(currentAppMode !== 'creation'){
+    if(isPrimary) toast('Mode lecture seule: passe en mode Création pour modifier.');
+    updateCoords(row, col);
+    return;
+  }
+
   if(currentTool === 'binrange'){
     if(isPrimary) handleBinRangeClick(row, col);
+  } else if(currentTool === 'zonebuild'){
+    if(isPrimary) handleZoneBuildClick(row, col);
   } else {
     if(isPrimary) snapshot();
     resetBinRangeState();
@@ -1408,7 +1606,7 @@ if(bgDefaultBtn){
 }
 
 // Menus: close others
-const menus = ['menuTools','menuView','menuSearch','menuBins','menuAudit','menuActions','menuData','menuInfo']
+const menus = ['menuModes','menuTools','menuView','menuSearch','menuBins','menuAudit','menuActions','menuData','menuInfo']
   .map(id => document.getElementById(id));
 menus.forEach(m => m.addEventListener('toggle', () => {
   if(m.open) menus.forEach(o => { if(o!==m) o.removeAttribute('open'); });
@@ -1428,6 +1626,58 @@ function closeMenu(id){ document.getElementById(id)?.removeAttribute('open'); }
 
 // Tool buttons
 document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.getAttribute('data-tool'))));
+document.querySelectorAll('[data-app-mode]').forEach(b => b.addEventListener('click', () => setAppMode(b.getAttribute('data-app-mode'))));
+
+if(paintDragQuickEl){
+  paintDragQuickEl.addEventListener('change', () => { paintDragEl.checked = paintDragQuickEl.checked; });
+  paintDragEl.addEventListener('change', () => { paintDragQuickEl.checked = paintDragEl.checked; });
+}
+if(selectModeQuickEl){
+  selectModeQuickEl.addEventListener('change', () => { selectModeEl.checked = selectModeQuickEl.checked; selectModeEl.dispatchEvent(new Event('change')); });
+  selectModeEl.addEventListener('change', () => { selectModeQuickEl.checked = selectModeEl.checked; });
+}
+
+document.getElementById('btnOpenBatchBins')?.addEventListener('click', () => {
+  batchBinPanel.style.display = 'block';
+  if(!selectModeEl.checked){ selectModeEl.checked = true; selectModeEl.dispatchEvent(new Event('change')); }
+  toast('Sélectionne la zone puis applique la série');
+});
+
+document.getElementById('batchClose')?.addEventListener('click', () => batchBinPanel.style.display='none');
+document.getElementById('batchApply')?.addEventListener('click', applyBatchBins);
+
+document.getElementById('zoneUndo')?.addEventListener('click', () => {
+  if(zoneBuildState.start && zoneBuildState.end){
+    zoneBuildState.end = null; zoneBuildState.cells = []; zoneBuildState.phase='awaitEnd';
+    clearZonePreview();
+    gridEl.children[cellKey(zoneBuildState.start.row,zoneBuildState.start.col)]?.classList.add('zonePreview');
+    document.getElementById('zoneBuilderInfo').textContent = '2e case annulée, choisis une nouvelle fin';
+    return;
+  }
+  zoneBuildReset();
+});
+
+document.getElementById('zoneCancel')?.addEventListener('click', () => {
+  clearZonePreview();
+  zoneBuildReset();
+  zoneBuilderPanel.style.display='none';
+  if(currentTool === 'zonebuild') setTool('binrange');
+});
+
+document.getElementById('zoneConfirm')?.addEventListener('click', () => {
+  if(!zoneBuildState.cells.length) return toast('Délimite la zone (2 clics)');
+  const z = document.getElementById('zoneBuilderSelect').value || 'L2';
+  snapshot();
+  for(const p of zoneBuildState.cells){
+    gridData[p.row][p.col].zone = z;
+    applyCellVisual(gridEl.children[cellKey(p.row,p.col)], gridData[p.row][p.col]);
+  }
+  setDirty(true);
+  clearZonePreview();
+  zoneBuildReset();
+  toast('Zone ' + z + ' appliquée');
+  updateStats();
+});
 
 // Selection rectangle
 function beginSelection(r,c){
@@ -1497,7 +1747,7 @@ if(navModeEl){
 
 
 // Zone names
-let zoneNames = {A:'Zone A', B:'Zone B', C:'Zone C', D:'Zone D'};
+let zoneNames = {A:'Zone A', B:'Zone B', C:'Zone C', D:'Zone D', L2:'Zone L2'};
 function loadZoneNames(){
   try{
     const raw = localStorage.getItem(ZONES_KEY);
@@ -1541,6 +1791,46 @@ document.getElementById('btnApplyZone').addEventListener('click', () => {
   toast(z ? ('Zone ' + zoneName(z) + ' appliquée') : 'Zone retirée');
   updateStats();
 });
+
+function applyBatchBins(){
+  if(selection.size === 0) return toast('Sélectionne où insérer les BIN');
+  const prefix = (document.getElementById('batchPrefix').value || 'L3A').trim().toUpperCase();
+  const start = parseInt((document.getElementById('batchStart').value || '1').replace(/\D+/g,''), 10);
+  const end = parseInt((document.getElementById('batchEnd').value || '59').replace(/\D+/g,''), 10);
+  const pType = document.getElementById('batchType').value || 'P7';
+  if(!prefix || !Number.isFinite(start) || !Number.isFinite(end) || end < start) return toast('Paramètres invalides');
+
+  const ordered = [...selection].sort((a,b)=>a-b);
+  const count = end - start + 1;
+  if(ordered.length < count) return toast(`Sélection insuffisante (${ordered.length}/${count})`);
+
+  snapshot();
+  for(let i=0;i<count;i++){
+    const k = ordered[i];
+    const r = Math.floor(k / COLS);
+    const c = k % COLS;
+    const slot = String(start + i).padStart(2,'0');
+    const code = prefix + slot;
+    const d = gridData[r][c];
+    d.type = 'bin';
+    d.binId = code;
+    d.depth = 0;
+    d.isHead = true;
+    d.direction = null;
+    d.label = slot + ' ' + pType;
+    d.pType = pType;
+    d.pCount = 1;
+    d.pIndex = 1;
+    d.entityId = code;
+    touchCellMetadata(d, {updatedBy: 'editor', source: 'manual', confidence: 1});
+    applyCellVisual(gridEl.children[k], d);
+  }
+  setDirty(true);
+  batchBinPanel.style.display = 'none';
+  toast(`BIN ${prefix}${String(start).padStart(2,'0')} → ${prefix}${String(end).padStart(2,'0')} insérées`);
+  refreshBinList();
+  updateStats();
+}
 
 // Copy/Paste block
 document.getElementById('btnCopyBlock').addEventListener('click', () => {
@@ -1661,7 +1951,7 @@ function exportPngBlob(){
     ctx.fillRect(c*size+1, r*size+1, size-1, size-1);
   }
 
-  const zmap = {A:'rgba(26,99,255,0.18)',B:'rgba(18,183,106,0.18)',C:'rgba(245,158,11,0.22)',D:'rgba(255,77,79,0.16)'};
+  const zmap = {A:'rgba(26,99,255,0.18)',B:'rgba(18,183,106,0.18)',C:'rgba(245,158,11,0.22)',D:'rgba(255,77,79,0.16)',L2:'rgba(155,81,224,0.20)'};
 
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     const d = gridData[r][c];
@@ -2052,7 +2342,7 @@ document.getElementById('btnRunAudit').addEventListener('click', runAudit);
 // STATS
 function updateStats(){
   let bins=0, walls=0, doors=0, works=0, labeled=0;
-  let zA=0,zB=0,zC=0,zD=0;
+  const zoneCount = {};
   for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
     const d = gridData[r][c];
     if(d.type==='bin') bins++;
@@ -2060,10 +2350,12 @@ function updateStats(){
     if(d.type==='door') doors++;
     if(d.type==='work') works++;
     if(d.label) labeled++;
-    if(d.zone==='A') zA++; if(d.zone==='B') zB++; if(d.zone==='C') zC++; if(d.zone==='D') zD++;
+    if(d.zone) zoneCount[d.zone] = (zoneCount[d.zone]||0)+1;
   }
+  const baseZones = ['A','B','C','D','L2'];
+  const zoneText = baseZones.map(z => `${zoneName(z)}:${zoneCount[z]||0}`).join(' ');
   const sel = selection.size ? ` • sel:${selection.size}` : '';
-  statsEl.textContent = `BIN:${bins} Mur:${walls} Porte:${doors} Poste:${works} Labels:${labeled} | ${zoneName('A')}:${zA} ${zoneName('B')}:${zB} ${zoneName('C')}:${zC} ${zoneName('D')}:${zD}${sel}`;
+  statsEl.textContent = `BIN:${bins} Mur:${walls} Porte:${doors} Poste:${works} Labels:${labeled} | ${zoneText}${sel}`;
 }
 
 // PDF Export (canvas pages -> embedded JPEG PDF)
@@ -2237,7 +2529,7 @@ function drawCoverPage(){
 
       resolve(c);
     };
-    img.src = 'branding/dl-cube-512.png';
+    img.src = 'icon-512.png';
   });
 }
 
@@ -2273,7 +2565,7 @@ async function drawPlanPage(){
   for(let x=0; x<=planW; x+=cell){ pctx.beginPath(); pctx.moveTo(x,0); pctx.lineTo(x,planH); pctx.stroke(); }
   for(let y=0; y<=planH; y+=cell){ pctx.beginPath(); pctx.moveTo(0,y); pctx.lineTo(planW,y); pctx.stroke(); }
 
-  const zmap = {A:'rgba(26,99,255,0.18)',B:'rgba(18,183,106,0.18)',C:'rgba(245,158,11,0.22)',D:'rgba(255,77,79,0.16)'};
+  const zmap = {A:'rgba(26,99,255,0.18)',B:'rgba(18,183,106,0.18)',C:'rgba(245,158,11,0.22)',D:'rgba(255,77,79,0.16)',L2:'rgba(155,81,224,0.20)'};
   function fillCell(r,c,fill){ pctx.fillStyle = fill; pctx.fillRect(c*cell+1, r*cell+1, cell-1, cell-1); }
 
   for(let r=0;r<ROWS;r++) for(let c0=0;c0<COLS;c0++){
@@ -2330,7 +2622,8 @@ function drawLegendPage(){
     {name:zoneName('A'), color:'rgba(26,99,255,0.45)'},
     {name:zoneName('B'), color:'rgba(18,183,106,0.45)'},
     {name:zoneName('C'), color:'rgba(245,158,11,0.55)'},
-    {name:zoneName('D'), color:'rgba(255,77,79,0.45)'}
+    {name:zoneName('D'), color:'rgba(255,77,79,0.45)'},
+    {name:zoneName('L2'), color:'rgba(155,81,224,0.45)'}
   ];
 
   let y = 200;
@@ -2682,11 +2975,12 @@ window.validateVisionObservation = validateVisionObservation;
 
 // Init
 createGrid();
-  bwInit();
-  bwShow(1);
+bwInit();
+bwShow(1);
 setDirty(true);
+setAppMode('creation');
 setTool('binrange');
-if(navModeEl){ toast('Navigation ON'); }
+updateToolQuickBar();
 updateStats();
 refreshBinList();
 

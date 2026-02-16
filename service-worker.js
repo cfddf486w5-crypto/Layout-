@@ -1,13 +1,13 @@
-// SHOP Layout – Service Worker (V7)
-const CACHE_NAME = 'shop-layout-v7-2026-02-11';
+// SHOP Layout – Service Worker (V8)
+const CACHE_NAME = 'shop-layout-v8-2026-02-15';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './service-worker.js',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  './icons/apple-touch-icon.png'
+  './icon-192.png',
+  './icon-512.png',
+  './apple-touch-icon.png'
 ];
 
 self.addEventListener('install', (event) => {
