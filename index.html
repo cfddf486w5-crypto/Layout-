@@ -454,9 +454,9 @@
       bottom: calc(12px + env(safe-area-inset-bottom));
       z-index: 70;
       display: none;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 8px;
-      width: min(92vw, 420px);
+      width: min(94vw, 520px);
       padding: 8px;
       border-radius: 14px;
       border: 1px solid rgba(148,163,184,0.24);
@@ -734,6 +734,7 @@
               <button class="btn" style="flex:1" id="btnCopyBlock">📋 Copier</button>
               <button class="btn" style="flex:1" id="btnPasteBlock">📥 Coller</button>
             </div>
+            <button class="btn neon" id="btnTemplateWarehouse">🏗️ Gabarit entrepôt (allées + quais)</button>
             <div class="row">
               <button class="btn small" id="zoomOut">➖ Zoom</button>
               <button class="btn small" id="zoomIn">➕ Zoom</button>
@@ -756,6 +757,8 @@
             </div>
             <button class="btn" id="btnExportPng">🖼️ Export PNG</button>
             <button class="btn neon" id="btnExportPdf">🧾 Export PDF Pro</button>
+            <button class="btn" id="btnRestoreBackup">🛟 Restaurer dernier backup terrain</button>
+            <div class="badge" id="backupStatus" style="width:100%; justify-content:center;">Backups terrain: 0</div>
 
             <input type="file" id="fileImport" accept="application/json" style="display:none" />
             <button class="btn" id="btnImport">Importer…</button>
@@ -795,6 +798,7 @@
 
             <div style="height:10px"></div>
             <button class="btn" id="btnInstall">⬇️ Installer (PWA)</button>
+            <button class="btn" id="btnCacheNow">📲 Préparer le cache hors ligne</button>
             <button class="btn" id="btnHelp">⌨️ Aide</button>
             <div style="height:8px"></div>
             <div class="badge" style="width:100%; justify-content:center;">iPhone: Safari → Partager → Sur l’écran d’accueil</div>
@@ -831,6 +835,7 @@
   <button class="qbtn" id="qRedo" type="button">↷</button>
   <button class="qbtn qsave" id="qSave" type="button">💾</button>
   <button class="qbtn" id="qFind" type="button">🔎</button>
+  <button class="qbtn" id="qTemplate" type="button">🏗️</button>
 </nav>
 
 <div id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">

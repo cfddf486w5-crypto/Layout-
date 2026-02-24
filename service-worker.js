@@ -1,5 +1,5 @@
 // SHOP Layout – Service Worker (V10)
-const CACHE_NAME = 'shop-layout-v10-2026-02-24';
+const CACHE_NAME = 'shop-layout-v11-2026-02-24';
 const APP_SHELL = [
   './',
   './index.html',
@@ -71,4 +71,10 @@ self.addEventListener('fetch', (event) => {
         .catch(() => caches.match('./index.html'));
     })
   );
+});
+
+
+self.addEventListener('message', (event) => {
+  if(event.data?.type !== 'CACHE_WARMUP') return;
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_SHELL)));
 });
