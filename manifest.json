@@ -1,0 +1,422 @@
+[
+  {
+    "id": "wall_solid_int",
+    "label": "Mur plein (intérieur)",
+    "file": "assets/icons/wall_solid_int.svg"
+  },
+  {
+    "id": "wall_solid_ext",
+    "label": "Mur plein (extérieur)",
+    "file": "assets/icons/wall_solid_ext.svg"
+  },
+  {
+    "id": "wall_light_partition",
+    "label": "Cloison légère",
+    "file": "assets/icons/wall_light_partition.svg"
+  },
+  {
+    "id": "wall_mesh_fence",
+    "label": "Mur grillagé",
+    "file": "assets/icons/wall_mesh_fence.svg"
+  },
+  {
+    "id": "pillar_column",
+    "label": "Colonne / pilier",
+    "file": "assets/icons/pillar_column.svg"
+  },
+  {
+    "id": "guard_rail",
+    "label": "Garde-corps",
+    "file": "assets/icons/guard_rail.svg"
+  },
+  {
+    "id": "curb_barrier",
+    "label": "Bordure / butée",
+    "file": "assets/icons/curb_barrier.svg"
+  },
+  {
+    "id": "window_opening",
+    "label": "Fenêtre",
+    "file": "assets/icons/window_opening.svg"
+  },
+  {
+    "id": "floor_hole",
+    "label": "Ouverture au sol (trémie)",
+    "file": "assets/icons/floor_hole.svg"
+  },
+  {
+    "id": "door_single",
+    "label": "Porte simple",
+    "file": "assets/icons/door_single.svg"
+  },
+  {
+    "id": "door_double",
+    "label": "Porte double",
+    "file": "assets/icons/door_double.svg"
+  },
+  {
+    "id": "door_swing_left",
+    "label": "Porte battante (charnière G)",
+    "file": "assets/icons/door_swing_left.svg"
+  },
+  {
+    "id": "door_swing_right",
+    "label": "Porte battante (charnière D)",
+    "file": "assets/icons/door_swing_right.svg"
+  },
+  {
+    "id": "door_sliding",
+    "label": "Porte coulissante",
+    "file": "assets/icons/door_sliding.svg"
+  },
+  {
+    "id": "door_rollup",
+    "label": "Porte de garage (roll-up)",
+    "file": "assets/icons/door_rollup.svg"
+  },
+  {
+    "id": "door_fire",
+    "label": "Porte coupe-feu",
+    "file": "assets/icons/door_fire.svg"
+  },
+  {
+    "id": "door_security_badge",
+    "label": "Porte sécurisée (badge)",
+    "file": "assets/icons/door_security_badge.svg"
+  },
+  {
+    "id": "gate_cage",
+    "label": "Portail de cage",
+    "file": "assets/icons/gate_cage.svg"
+  },
+  {
+    "id": "curtain_strip",
+    "label": "Rideau industriel (lanières)",
+    "file": "assets/icons/curtain_strip.svg"
+  },
+  {
+    "id": "dock_door",
+    "label": "Porte de quai",
+    "file": "assets/icons/dock_door.svg"
+  },
+  {
+    "id": "turnstile",
+    "label": "Tourniquet",
+    "file": "assets/icons/turnstile.svg"
+  },
+  {
+    "id": "aisle_walkway",
+    "label": "Allée piétonne",
+    "file": "assets/icons/aisle_walkway.svg"
+  },
+  {
+    "id": "aisle_forklift",
+    "label": "Allée chariot",
+    "file": "assets/icons/aisle_forklift.svg"
+  },
+  {
+    "id": "oneway_n",
+    "label": "Sens unique ↑",
+    "file": "assets/icons/oneway_n.svg"
+  },
+  {
+    "id": "oneway_e",
+    "label": "Sens unique →",
+    "file": "assets/icons/oneway_e.svg"
+  },
+  {
+    "id": "oneway_s",
+    "label": "Sens unique ↓",
+    "file": "assets/icons/oneway_s.svg"
+  },
+  {
+    "id": "oneway_w",
+    "label": "Sens unique ←",
+    "file": "assets/icons/oneway_w.svg"
+  },
+  {
+    "id": "crosswalk",
+    "label": "Passage piéton",
+    "file": "assets/icons/crosswalk.svg"
+  },
+  {
+    "id": "stop_sign",
+    "label": "Stop",
+    "file": "assets/icons/stop_sign.svg"
+  },
+  {
+    "id": "no_entry",
+    "label": "Accès interdit",
+    "file": "assets/icons/no_entry.svg"
+  },
+  {
+    "id": "hazard_zone",
+    "label": "Zone danger",
+    "file": "assets/icons/hazard_zone.svg"
+  },
+  {
+    "id": "rack_pallet",
+    "label": "Rack palettes (standard)",
+    "file": "assets/icons/rack_pallet.svg"
+  },
+  {
+    "id": "rack_cantilever",
+    "label": "Rack cantilever",
+    "file": "assets/icons/rack_cantilever.svg"
+  },
+  {
+    "id": "shelving",
+    "label": "Étagères / shelving",
+    "file": "assets/icons/shelving.svg"
+  },
+  {
+    "id": "mezzanine",
+    "label": "Mezzanine (zone)",
+    "file": "assets/icons/mezzanine.svg"
+  },
+  {
+    "id": "floor_stack",
+    "label": "Stock au sol",
+    "file": "assets/icons/floor_stack.svg"
+  },
+  {
+    "id": "empty_pallet_area",
+    "label": "Zone palettes vides",
+    "file": "assets/icons/empty_pallet_area.svg"
+  },
+  {
+    "id": "tote_area",
+    "label": "Zone bacs/totes",
+    "file": "assets/icons/tote_area.svg"
+  },
+  {
+    "id": "cage_storage",
+    "label": "Cage grillagée (valeur)",
+    "file": "assets/icons/cage_storage.svg"
+  },
+  {
+    "id": "battery_charging",
+    "label": "Charge batteries chariots",
+    "file": "assets/icons/battery_charging.svg"
+  },
+  {
+    "id": "bin_p1",
+    "label": "Bin P1",
+    "file": "assets/icons/bin_p1.svg"
+  },
+  {
+    "id": "bin_p2",
+    "label": "Bin P2",
+    "file": "assets/icons/bin_p2.svg"
+  },
+  {
+    "id": "bin_p3",
+    "label": "Bin P3",
+    "file": "assets/icons/bin_p3.svg"
+  },
+  {
+    "id": "bin_p4",
+    "label": "Bin P4",
+    "file": "assets/icons/bin_p4.svg"
+  },
+  {
+    "id": "bin_p5",
+    "label": "Bin P5",
+    "file": "assets/icons/bin_p5.svg"
+  },
+  {
+    "id": "bin_p6",
+    "label": "Bin P6",
+    "file": "assets/icons/bin_p6.svg"
+  },
+  {
+    "id": "bin_p7",
+    "label": "Bin P7",
+    "file": "assets/icons/bin_p7.svg"
+  },
+  {
+    "id": "bin_free",
+    "label": "Bin libre (visuel)",
+    "file": "assets/icons/bin_free.svg"
+  },
+  {
+    "id": "bin_blocked",
+    "label": "Bin bloqué (maintenance)",
+    "file": "assets/icons/bin_blocked.svg"
+  },
+  {
+    "id": "bin_reserved",
+    "label": "Bin réservé",
+    "file": "assets/icons/bin_reserved.svg"
+  },
+  {
+    "id": "bin_unknown_type",
+    "label": "TYPE INCONNU",
+    "file": "assets/icons/bin_unknown_type.svg"
+  },
+  {
+    "id": "reception_staging",
+    "label": "RECEPTION_STAGING (virtuel)",
+    "file": "assets/icons/reception_staging.svg"
+  },
+  {
+    "id": "zone_receiving",
+    "label": "Zone Réception",
+    "file": "assets/icons/zone_receiving.svg"
+  },
+  {
+    "id": "zone_qc",
+    "label": "Contrôle qualité (QC)",
+    "file": "assets/icons/zone_qc.svg"
+  },
+  {
+    "id": "zone_putaway",
+    "label": "Mise en stock (Putaway)",
+    "file": "assets/icons/zone_putaway.svg"
+  },
+  {
+    "id": "zone_picking",
+    "label": "Picking",
+    "file": "assets/icons/zone_picking.svg"
+  },
+  {
+    "id": "zone_consolidation",
+    "label": "Consolidation",
+    "file": "assets/icons/zone_consolidation.svg"
+  },
+  {
+    "id": "zone_packing",
+    "label": "Packing",
+    "file": "assets/icons/zone_packing.svg"
+  },
+  {
+    "id": "zone_shipping",
+    "label": "Expédition (Shipping)",
+    "file": "assets/icons/zone_shipping.svg"
+  },
+  {
+    "id": "zone_crossdock",
+    "label": "Cross-dock",
+    "file": "assets/icons/zone_crossdock.svg"
+  },
+  {
+    "id": "zone_returns",
+    "label": "Retours",
+    "file": "assets/icons/zone_returns.svg"
+  },
+  {
+    "id": "zone_scrap",
+    "label": "Scrap / Rejet",
+    "file": "assets/icons/zone_scrap.svg"
+  },
+  {
+    "id": "zone_rebox",
+    "label": "Rebox / Reconditionnement",
+    "file": "assets/icons/zone_rebox.svg"
+  },
+  {
+    "id": "zone_exceptions",
+    "label": "À valider / Exceptions",
+    "file": "assets/icons/zone_exceptions.svg"
+  },
+  {
+    "id": "dock_platform",
+    "label": "Quai (plateforme)",
+    "file": "assets/icons/dock_platform.svg"
+  },
+  {
+    "id": "dock_leveler",
+    "label": "Niveauur de quai",
+    "file": "assets/icons/dock_leveler.svg"
+  },
+  {
+    "id": "ramp",
+    "label": "Rampe",
+    "file": "assets/icons/ramp.svg"
+  },
+  {
+    "id": "conveyor_fixed",
+    "label": "Convoyeur fixe",
+    "file": "assets/icons/conveyor_fixed.svg"
+  },
+  {
+    "id": "conveyor_extendable",
+    "label": "Convoyeur extensible",
+    "file": "assets/icons/conveyor_extendable.svg"
+  },
+  {
+    "id": "lift_table",
+    "label": "Table élévatrice",
+    "file": "assets/icons/lift_table.svg"
+  },
+  {
+    "id": "wrap_station",
+    "label": "Station film étirable",
+    "file": "assets/icons/wrap_station.svg"
+  },
+  {
+    "id": "scale_station",
+    "label": "Balance / pesée",
+    "file": "assets/icons/scale_station.svg"
+  },
+  {
+    "id": "printer_station",
+    "label": "Poste imprimante étiquettes",
+    "file": "assets/icons/printer_station.svg"
+  },
+  {
+    "id": "office",
+    "label": "Bureau",
+    "file": "assets/icons/office.svg"
+  },
+  {
+    "id": "customer_counter",
+    "label": "Comptoir service client",
+    "file": "assets/icons/customer_counter.svg"
+  },
+  {
+    "id": "toilet",
+    "label": "Toilette",
+    "file": "assets/icons/toilet.svg"
+  },
+  {
+    "id": "cafeteria",
+    "label": "Cafétéria",
+    "file": "assets/icons/cafeteria.svg"
+  },
+  {
+    "id": "locker_room",
+    "label": "Vestiaire",
+    "file": "assets/icons/locker_room.svg"
+  },
+  {
+    "id": "electrical_room",
+    "label": "Local électrique",
+    "file": "assets/icons/electrical_room.svg"
+  },
+  {
+    "id": "it_closet",
+    "label": "Local IT / réseau",
+    "file": "assets/icons/it_closet.svg"
+  },
+  {
+    "id": "label_text",
+    "label": "Texte / étiquette",
+    "file": "assets/icons/label_text.svg"
+  },
+  {
+    "id": "marker_entry",
+    "label": "Point d’entrée",
+    "file": "assets/icons/marker_entry.svg"
+  },
+  {
+    "id": "marker_exit",
+    "label": "Point de sortie",
+    "file": "assets/icons/marker_exit.svg"
+  },
+  {
+    "id": "marker_measure",
+    "label": "Repère mesure / échelle",
+    "file": "assets/icons/marker_measure.svg"
+  }
+]
