@@ -1,6 +1,7 @@
 
 import { ROWS, COLS, createDefaultCell as DEFAULT_CELL, createEmptyGrid, cellKey } from './model/grid.js';
 import { createLayoutState } from './model/layoutState.js';
+import { buildCaseTypeCatalog, getCaseType } from './model/caseTypes.js';
 import { listBinModels, normalizeBinModel, getBinModelMeta, getCapacityLabel } from './model/binModels.js';
 import { applyCellVisual as renderCell } from './ui/render.js';
 import { loadLayoutFromStorage, saveLayoutToStorage, loadZoneNamesFromStorage, saveZoneNamesToStorage } from './services/storage.js';
@@ -299,6 +300,8 @@ const CUSTOM_TOOL_BUTTONS = [
   ['virtual-reception-staging', 'RECEPTION_STAGING'], ['virtual-validation-zone', 'Validation exceptions']
 ];
 
+const CASE_TYPE_CATALOG = buildCaseTypeCatalog(CUSTOM_TOOL_BUTTONS);
+
 const FRACTION_LABELS = {
   1: 'entière',
   0.5: '1/2',
@@ -372,6 +375,7 @@ function hydrateCell(src){
   if(!src) return DEFAULT_CELL();
   return {
     type: src.type || 'empty',
+    caseTypeId: src.caseTypeId || src.type || 'empty',
     label: src.label || '',
     binId: src.binId ?? null,
     depth: (src.depth === 0 || src.depth) ? src.depth : null,
@@ -513,17 +517,19 @@ function handleSimpleToolClick(row, col, tool){
     if(txt !== null){
       patch = {
         label: txt.trim(),
-        type: (!current.type || current.type === 'empty') ? 'bin' : current.type
+        type: (!current.type || current.type === 'empty') ? 'bin' : current.type,
+        caseTypeId: current.caseTypeId || ((!current.type || current.type === 'empty') ? 'bin' : current.type)
       };
     }
   } else if(tool === 'bin'){
-    patch = { type: 'bin', binId: null, depth: null, isHead: false, direction: null, label: current.label || '', sizeFraction: 1 };
+    patch = { type: 'bin', caseTypeId: 'bin', binId: null, depth: null, isHead: false, direction: null, label: current.label || '', sizeFraction: 1 };
   } else if(tool === 'empty'){
     layoutState.applyOperation({ type: 'CLEAR_CELL', position: { row, col } });
   } else if(STRUCTURAL_TOOLS.has(tool) || DOOR_TOOLS.has(tool) || PLAN_TOOLS.has(tool)){
     const fraction = PLAN_TOOLS.has(tool) ? selectedFraction() : 1;
     const toolLabel = tool === 'roadstop' ? '🛑' : '';
-    patch = { type: tool, binId: null, depth: null, isHead: false, direction: null, label: toolLabel, sizeFraction: fraction };
+    const caseType = getCaseType(CASE_TYPE_CATALOG, tool);
+    patch = { type: tool, caseTypeId: caseType.id, binId: null, depth: null, isHead: false, direction: null, label: toolLabel, sizeFraction: fraction };
   }
 
   if(patch){
@@ -955,7 +961,7 @@ document.getElementById('btnClear').addEventListener('click', () => {
 });
 
 // Export
-function exportObj(){ return buildExportObject({ rows: ROWS, cols: COLS, data: gridData }); }
+function exportObj(){ return buildExportObject({ rows: ROWS, cols: COLS, data: gridData, caseTypes: Array.from(CASE_TYPE_CATALOG.values()) }); }
 
 document.getElementById('btnExport').addEventListener('click', () => {
   outputEl.value = JSON.stringify(exportObj());

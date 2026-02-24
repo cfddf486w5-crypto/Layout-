@@ -3,6 +3,7 @@ export const COLS = 40;
 
 export const createDefaultCell = () => ({
   type: 'empty',
+  caseTypeId: 'empty',
   label: '',
   binId: null,
   depth: null,

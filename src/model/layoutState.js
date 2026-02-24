@@ -75,6 +75,7 @@ export function createLayoutState({ rows = ROWS, cols = COLS, gridData } = {}) {
         ordered.forEach((position, depth) => {
           setCell(position, {
             type: 'bin',
+            caseTypeId: 'bin',
             binId,
             depth,
             isHead: depth === 0,
