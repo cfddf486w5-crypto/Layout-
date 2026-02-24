@@ -42,6 +42,7 @@ const onlineBadge = document.getElementById('onlineBadge');
 const toastEl = document.getElementById('toast');
 const zoneSelect = document.getElementById('zoneSelect');
 const cellFractionEl = document.getElementById('cellFraction');
+const customToolButtonsEl = document.getElementById('customToolButtons');
 const kpiSurfaceEl = document.getElementById('kpiSurface');
 const kpiOccupancyEl = document.getElementById('kpiOccupancy');
 const kpiComplianceEl = document.getElementById('kpiCompliance');
@@ -123,8 +124,46 @@ function cellSurfaceFt2(){
   return +((cellSizeInch / 12) * (cellSizeInch / 12)).toFixed(2);
 }
 
+const STRUCTURAL_TOOLS = new Set([
+  'wall',
+  'wall-interior',
+  'wall-exterior',
+  'partition-light',
+  'wall-mesh',
+  'barrier-guardrail',
+  'column',
+  'dock-pillar',
+  'window',
+  'floor-opening'
+]);
+
+const DOOR_TOOLS = new Set([
+  'door',
+  'door-single',
+  'door-double',
+  'door-swing',
+  'door-sliding',
+  'door-fire',
+  'door-secure',
+  'gate-wicket',
+  'curtain-industrial',
+  'garage',
+  'door-dock',
+  'gate-grid'
+]);
+
 const PLAN_TOOLS = new Set([
-  'work', 'office', 'charger', 'electrical', 'shelving', 'racking', 'road', 'roadstop', 'cafeteria', 'garage', 'stairs'
+  'work', 'office', 'charger', 'electrical', 'shelving', 'racking', 'road', 'roadstop', 'cafeteria', 'stairs',
+  'zone-reception', 'zone-staging-reception', 'zone-qc', 'zone-putaway', 'zone-picking', 'zone-consolidation', 'zone-packing',
+  'zone-shipping', 'zone-crossdock', 'zone-returns', 'zone-scrap', 'zone-rebox', 'zone-validation', 'zone-supplies',
+  'rack-standard', 'rack-cantilever', 'mezzanine', 'bin-slot', 'floor-stack', 'cage-value', 'zone-overflow', 'zone-empty-bin',
+  'lane-pedestrian', 'lane-forklift', 'one-way', 'no-entry', 'danger-zone', 'stop-mandatory', 'crosswalk', 'convex-mirror',
+  'extinguisher', 'eyewash', 'emergency-exit', 'assembly-point', 'emergency-station',
+  'dock', 'dock-leveler', 'ramp', 'conveyor', 'lift-table', 'empty-pallets', 'tote-zone', 'forklift-park', 'battery-charge',
+  'wrap-station', 'customer-counter', 'toilet', 'locker-room', 'mechanical-room', 'it-closet', 'waste-recycling',
+  'text-label', 'aisle-number', 'measure-marker', 'line-separator', 'zone-color-overlay', 'icon-info', 'entry-exit-point',
+  'operator-spawn', 'bin-p1', 'bin-p2', 'bin-p3', 'bin-p4', 'bin-p5', 'bin-p6', 'bin-p7', 'bin-unknown', 'bin-blocked',
+  'bin-reserved', 'virtual-reception-staging', 'virtual-validation-zone'
 ]);
 
 const TYPE_COLORS = {
@@ -141,8 +180,124 @@ const TYPE_COLORS = {
   roadstop: '#dc2626',
   cafeteria: '#f472b6',
   garage: '#14b8a6',
-  stairs: '#94a3b8'
+  stairs: '#94a3b8',
+  'wall-interior': '#6b7280',
+  'wall-exterior': '#4b5563',
+  'partition-light': '#9ca3af',
+  'wall-mesh': '#64748b',
+  'barrier-guardrail': '#22d3ee',
+  column: '#52525b',
+  'dock-pillar': '#71717a',
+  window: '#93c5fd',
+  'floor-opening': '#1f2937',
+  'door-single': '#12b76a',
+  'door-double': '#16a34a',
+  'door-swing': '#22c55e',
+  'door-sliding': '#10b981',
+  'door-fire': '#ef4444',
+  'door-secure': '#0ea5e9',
+  'gate-wicket': '#34d399',
+  'curtain-industrial': '#f59e0b',
+  'door-dock': '#06b6d4',
+  'gate-grid': '#84cc16',
+  'zone-reception': '#60a5fa',
+  'zone-staging-reception': '#818cf8',
+  'zone-qc': '#a78bfa',
+  'zone-putaway': '#c084fc',
+  'zone-picking': '#f472b6',
+  'zone-consolidation': '#fb7185',
+  'zone-packing': '#fb923c',
+  'zone-shipping': '#f59e0b',
+  'zone-crossdock': '#facc15',
+  'zone-returns': '#4ade80',
+  'zone-scrap': '#ef4444',
+  'zone-rebox': '#f97316',
+  'zone-validation': '#06b6d4',
+  'zone-supplies': '#22c55e',
+  'rack-standard': '#fb923c',
+  'rack-cantilever': '#fdba74',
+  mezzanine: '#94a3b8',
+  'bin-slot': '#334155',
+  'floor-stack': '#475569',
+  'cage-value': '#64748b',
+  'zone-overflow': '#f43f5e',
+  'zone-empty-bin': '#e2e8f0',
+  'lane-pedestrian': '#10b981',
+  'lane-forklift': '#0ea5e9',
+  'one-way': '#3b82f6',
+  'no-entry': '#dc2626',
+  'danger-zone': '#ef4444',
+  'stop-mandatory': '#b91c1c',
+  crosswalk: '#f8fafc',
+  'convex-mirror': '#a855f7',
+  extinguisher: '#dc2626',
+  eyewash: '#06b6d4',
+  'emergency-exit': '#22c55e',
+  'assembly-point': '#84cc16',
+  'emergency-station': '#e11d48',
+  dock: '#0284c7',
+  'dock-leveler': '#0ea5e9',
+  ramp: '#0f766e',
+  conveyor: '#2563eb',
+  'lift-table': '#8b5cf6',
+  'empty-pallets': '#a16207',
+  'tote-zone': '#65a30d',
+  'forklift-park': '#0891b2',
+  'battery-charge': '#14b8a6',
+  'wrap-station': '#7c3aed',
+  'customer-counter': '#e879f9',
+  toilet: '#38bdf8',
+  'locker-room': '#60a5fa',
+  'mechanical-room': '#78716c',
+  'it-closet': '#6366f1',
+  'waste-recycling': '#22c55e',
+  'text-label': '#e2e8f0',
+  'aisle-number': '#eab308',
+  'measure-marker': '#38bdf8',
+  'line-separator': '#94a3b8',
+  'zone-color-overlay': '#f472b6',
+  'icon-info': '#22d3ee',
+  'entry-exit-point': '#14b8a6',
+  'operator-spawn': '#8b5cf6',
+  'bin-p1': '#164e63',
+  'bin-p2': '#0f766e',
+  'bin-p3': '#15803d',
+  'bin-p4': '#65a30d',
+  'bin-p5': '#ca8a04',
+  'bin-p6': '#ea580c',
+  'bin-p7': '#b91c1c',
+  'bin-unknown': '#64748b',
+  'bin-blocked': '#7f1d1d',
+  'bin-reserved': '#4338ca',
+  'virtual-reception-staging': '#818cf8',
+  'virtual-validation-zone': '#06b6d4'
 };
+
+const CUSTOM_TOOL_BUTTONS = [
+  ['wall-interior', 'Mur intérieur'], ['wall-exterior', 'Mur extérieur'], ['partition-light', 'Cloison légère'], ['wall-mesh', 'Mur grillagé'],
+  ['barrier-guardrail', 'Barrière / garde-corps'], ['column', 'Poteau / colonne'], ['dock-pillar', 'Pilier de quai'], ['window', 'Fenêtre'],
+  ['floor-opening', 'Trémie / ouverture sol'], ['door-single', 'Porte simple'], ['door-double', 'Porte double'], ['door-swing', 'Porte battante'],
+  ['door-sliding', 'Porte coulissante'], ['door-fire', 'Porte coupe-feu'], ['door-secure', 'Porte sécurisée'], ['gate-wicket', 'Portillon'],
+  ['curtain-industrial', 'Rideau industriel'], ['door-dock', 'Porte de quai'], ['gate-grid', 'Portail / grille'], ['zone-reception', 'Zone réception'],
+  ['zone-staging-reception', 'Staging réception'], ['zone-qc', 'Contrôle qualité'], ['zone-putaway', 'Mise en stock'], ['zone-picking', 'Picking'],
+  ['zone-consolidation', 'Consolidation'], ['zone-packing', 'Packing'], ['zone-shipping', 'Shipping / expédition'], ['zone-crossdock', 'Cross-dock'],
+  ['zone-returns', 'Retours'], ['zone-scrap', 'Scrap / rejet'], ['zone-rebox', 'Rebox'], ['zone-validation', 'Zone à valider'],
+  ['zone-supplies', 'Fournitures / consommables'], ['rack-standard', 'Rack standard'], ['rack-cantilever', 'Rack cantilever'], ['mezzanine', 'Mezzanine'],
+  ['bin-slot', 'Bin / case'], ['floor-stack', 'Stock au sol'], ['cage-value', 'Cage grillagée'], ['zone-overflow', 'Zone overflow'],
+  ['zone-empty-bin', 'Bin libre (visuel)'], ['lane-pedestrian', 'Allée piétonne'], ['lane-forklift', 'Allée chariot'], ['one-way', 'Sens unique'],
+  ['no-entry', 'Passage interdit'], ['danger-zone', 'Zone danger'], ['stop-mandatory', 'Stop obligatoire'], ['crosswalk', 'Passage piéton'],
+  ['convex-mirror', 'Miroir convex'], ['extinguisher', 'Extincteur'], ['eyewash', 'Station lave-yeux'], ['emergency-exit', 'Sortie secours'],
+  ['assembly-point', 'Point de rassemblement'], ['emergency-station', 'Borne d’urgence'], ['dock', 'Quai'], ['dock-leveler', 'Niveleur de quai'],
+  ['ramp', 'Rampe'], ['conveyor', 'Convoyeur'], ['lift-table', 'Table élévatrice'], ['empty-pallets', 'Palettes vides'], ['tote-zone', 'Zone bacs'],
+  ['forklift-park', 'Chariot / transpalette'], ['battery-charge', 'Charge batteries'], ['wrap-station', 'Station film étirable'],
+  ['customer-counter', 'Comptoir service client'], ['toilet', 'Toilette'], ['locker-room', 'Vestiaire'], ['mechanical-room', 'Salle mécanique'],
+  ['it-closet', 'IT closet'], ['waste-recycling', 'Déchets / recyclage'], ['text-label', 'Texte / étiquette'], ['aisle-number', 'Numéro d’allée'],
+  ['measure-marker', 'Marqueur de mesure'], ['line-separator', 'Ligne séparation'], ['zone-color-overlay', 'Couleur de zone'],
+  ['icon-info', 'Icône info'], ['entry-exit-point', 'Point entrée/sortie'], ['operator-spawn', 'Spawn opérateur'], ['bin-p1', 'Bin type P1'],
+  ['bin-p2', 'Bin type P2'], ['bin-p3', 'Bin type P3'], ['bin-p4', 'Bin type P4'], ['bin-p5', 'Bin type P5'], ['bin-p6', 'Bin type P6'],
+  ['bin-p7', 'Bin type P7'], ['bin-unknown', 'Bin type inconnu'], ['bin-blocked', 'Bin bloqué'], ['bin-reserved', 'Bin réservé'],
+  ['virtual-reception-staging', 'RECEPTION_STAGING'], ['virtual-validation-zone', 'Validation exceptions']
+];
 
 const FRACTION_LABELS = {
   1: 'entière',
@@ -164,6 +319,18 @@ function fractionLabel(value){
 
 function typeColor(type){
   return TYPE_COLORS[type] || null;
+}
+
+function ensureDynamicTypeStyles(){
+  const style = document.createElement('style');
+  style.id = 'dynamicTypeStyles';
+  const textColors = new Set(['crosswalk', 'zone-empty-bin', 'window', 'text-label']);
+  const entries = Object.entries(TYPE_COLORS).map(([type, color]) => `.type-${type}{ background:${color}; color:${textColors.has(type) ? '#111827' : '#ffffff'; }`);
+  const wallRules = [...STRUCTURAL_TOOLS].map((type) => `.hide-walls .type-${type}{ opacity: 0.12; }`);
+  const doorRules = [...DOOR_TOOLS].map((type) => `.hide-doors .type-${type}{ opacity: 0.12; }`);
+  const workRules = [...PLAN_TOOLS].map((type) => `.hide-works .type-${type}{ opacity: 0.12; }`);
+  style.textContent = [...entries, ...wallRules, ...doorRules, ...workRules].join('\n');
+  document.head.appendChild(style);
 }
 
 function toast(msg){
@@ -245,6 +412,18 @@ function setHint(text){ hintText.textContent = text; }
 function resetBinRangeState(){
   binRangeState = { phase: 'idle', start: null, end: null, cells: [], head: null };
   if(currentTool === 'binrange') setHint('Mode : Création de BIN – clic 1 = première extrémité.');
+}
+
+function renderCustomToolButtons(){
+  if(!customToolButtonsEl) return;
+  customToolButtonsEl.innerHTML = '';
+  for(const [tool, label] of CUSTOM_TOOL_BUTTONS){
+    const btn = document.createElement('button');
+    btn.className = 'btn small';
+    btn.dataset.tool = tool;
+    btn.textContent = label;
+    customToolButtonsEl.appendChild(btn);
+  }
 }
 
 function applyCellVisual(cell, data){
@@ -341,7 +520,7 @@ function handleSimpleToolClick(row, col, tool){
     patch = { type: 'bin', binId: null, depth: null, isHead: false, direction: null, label: current.label || '', sizeFraction: 1 };
   } else if(tool === 'empty'){
     layoutState.applyOperation({ type: 'CLEAR_CELL', position: { row, col } });
-  } else if(tool === 'wall' || tool === 'door' || PLAN_TOOLS.has(tool)){
+  } else if(STRUCTURAL_TOOLS.has(tool) || DOOR_TOOLS.has(tool) || PLAN_TOOLS.has(tool)){
     const fraction = PLAN_TOOLS.has(tool) ? selectedFraction() : 1;
     const toolLabel = tool === 'roadstop' ? '🛑' : '';
     patch = { type: tool, binId: null, depth: null, isHead: false, direction: null, label: toolLabel, sizeFraction: fraction };
@@ -598,7 +777,11 @@ document.addEventListener('pointerdown', (e) => {
 function closeMenu(id){ document.getElementById(id)?.removeAttribute('open'); }
 
 // Tool buttons
-document.querySelectorAll('[data-tool]').forEach(b => b.addEventListener('click', () => setTool(b.getAttribute('data-tool'))));
+document.addEventListener('click', (event) => {
+  const target = event.target.closest('[data-tool]');
+  if(!target) return;
+  setTool(target.getAttribute('data-tool'));
+});
 
 // Selection rectangle
 function beginSelection(r,c){
@@ -1138,7 +1321,7 @@ function runAuditReport(){
           const cc = head.c + delta[1];
           if(rr>=0&&cc>=0&&rr<ROWS&&cc<COLS){
             const next = gridData[rr][cc];
-            if(next.type === 'wall'){
+            if(STRUCTURAL_TOOLS.has(next.type)){
               issues.push({sev:'warn', msg:`BIN ${id} : direction '${dir}' vers un mur`, pos:head});
             }
           }
@@ -1153,7 +1336,7 @@ function runAuditReport(){
     if(d.type==='door'){
       let walls=0;
       const neigh = [[r-1,c],[r+1,c],[r,c-1],[r,c+1]].filter(p => p[0]>=0&&p[1]>=0&&p[0]<ROWS&&p[1]<COLS);
-      for(const [rr,cc] of neigh) if(gridData[rr][cc].type==='wall') walls++;
+      for(const [rr,cc] of neigh) if(STRUCTURAL_TOOLS.has(gridData[rr][cc].type)) walls++;
       if(walls>=3) issues.push({sev:'warn', msg:`Porte L${r+1} C${c+1} semble bloquée (3 murs)`, pos:{r,c}});
     }
   }
@@ -1212,8 +1395,8 @@ function updateStats(){
     const d = gridData[r][c];
     if(d.type !== 'empty') occupied++;
     if(d.type==='bin') bins++;
-    if(d.type==='wall') walls++;
-    if(d.type==='door') doors++;
+    if(STRUCTURAL_TOOLS.has(d.type)) walls++;
+    if(DOOR_TOOLS.has(d.type)) doors++;
     if(PLAN_TOOLS.has(d.type)) works++;
     if(d.label) labeled++;
     if(d.zone==='A') zA++; if(d.zone==='B') zB++; if(d.zone==='C') zC++; if(d.zone==='D') zD++;
@@ -1890,6 +2073,8 @@ function bwValidateAndCreate(){
 
 
 // Init
+ensureDynamicTypeStyles();
+renderCustomToolButtons();
 createGrid();
 populateBinModelSelect();
   bwInit();
