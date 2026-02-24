@@ -75,6 +75,7 @@ const fDoors = document.getElementById('fDoors');
 const fWorks = document.getElementById('fWorks');
 const fZones = document.getElementById('fZones');
 const xray = document.getElementById('xray');
+const iphone3dEl = document.getElementById('iphone3d');
 
 // Search
 const searchInput = document.getElementById('searchInput');
@@ -1130,8 +1131,11 @@ function updateViewClasses(){
   gridWrap.classList.toggle('hide-works', fWorks.checked);
   gridWrap.classList.toggle('hide-zones', fZones.checked);
   gridWrap.classList.toggle('xray', xray.checked);
+  if(iphone3dEl){
+    gridWrap.classList.toggle('iphone-3d', iphone3dEl.checked);
+  }
 }
-[fBins,fWalls,fDoors,fWorks,fZones,xray].forEach(el => el.addEventListener('change', updateViewClasses));
+[fBins,fWalls,fDoors,fWorks,fZones,xray,iphone3dEl].filter(Boolean).forEach(el => el.addEventListener('change', updateViewClasses));
 updateViewClasses();
 
 function applyWarehouseTemplate(){
