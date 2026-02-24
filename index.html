@@ -380,6 +380,30 @@
     .xray .cell.highlight{ outline-color: rgba(0,180,255,0.9); }
     .xray .type-wall{ border-color: rgba(255,255,255,0.22) !important; }
 
+    /* vue 3D iPhone (offline) */
+    .iphone-3d{
+      perspective: 1300px;
+      perspective-origin: 50% 12%;
+      overflow: auto;
+      background: radial-gradient(circle at 50% 0%, #f8fbff 0%, #e9f0fb 60%, #dce7f8 100%);
+    }
+    .iphone-3d #grid{
+      transform-style: preserve-3d;
+      transform: rotateX(36deg) rotateZ(-4deg) translateY(-24px);
+      transform-origin: center top;
+      box-shadow: 0 40px 90px rgba(15,23,42,0.22);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .iphone-3d .cell{
+      box-shadow: inset 0 -3px 0 rgba(15,23,42,0.06);
+    }
+    .iphone-3d .cell.highlight{
+      box-shadow: 0 0 0 2px rgba(11,61,145,0.95), inset 0 -3px 0 rgba(15,23,42,0.08);
+    }
+    @media (prefers-reduced-motion: reduce){
+      .iphone-3d #grid{ transition: none; }
+    }
+
     /* selection rectangle */
     #selBox{
       position:absolute;
@@ -663,6 +687,8 @@
             <div class="switch"><div>Masquer zones<br><small>Retire les overlays</small></div><input type="checkbox" id="fZones" /></div>
             <div style="height:8px"></div>
             <div class="switch"><div>Mode X‑Ray<br><small>Voir seulement le maillage</small></div><input type="checkbox" id="xray" /></div>
+            <div style="height:8px"></div>
+            <div class="switch"><div>Vue 3D iPhone (offline)<br><small>Perspective locale, sans internet</small></div><input type="checkbox" id="iphone3d" /></div>
           </div>
         </div>
       </details>
