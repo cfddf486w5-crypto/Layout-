@@ -95,6 +95,14 @@ Validation import:
 - Profils locaux (auteur/updatedAt), statut projet (`draft/approved/frozen`) + watermark PNG.
 - Mode review (sans écriture auto), comparaison de snapshots (diff highlight canvas).
 - Toggle FR/EN (stocké projet), mode iPhone, auto-hide panneaux, focus mode.
+- Règles audit étendues: bins avec zone, racks capacité positive, priorité bin obligatoire (option).
+- Rule engine JSON: édition directe des toggles de règles dans le panneau Paramètres.
+- Export ciblé supplémentaire: `zones.csv` (zone,cells,racks,bins).
+- Import merge assisté: confirmation du nombre de cellules écrasées.
+- Validation schéma import renforcée (`cells.length`, dimensions).
+- Export des logs erreurs/historique (`layout-logs.json`).
+- Mode review: ajout de commentaires ancrés à une cellule (sans modifier le layout).
+- Comparaison de versions: sélection indices version A/B avant diff canvas.
 - Mode performance (désactive effets), overlay FPS debug.
 
 ## Format JSON v2 (extraits)

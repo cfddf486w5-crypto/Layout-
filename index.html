@@ -127,8 +127,14 @@
       <label><input id="ruleAisleWidth" type="checkbox" checked /> Règle allée min 2 cases</label>
       <label><input id="ruleExitClear" type="checkbox" checked /> Règle issues dégagées</label>
       <label><input id="ruleUnknownBin" type="checkbox" checked /> Règle bins connus</label>
+      <label><input id="ruleBinZone" type="checkbox" checked /> Règle bins avec zone</label>
+      <label><input id="ruleRackCapacity" type="checkbox" checked /> Règle racks capacité > 0</label>
+      <label><input id="rulePriority" type="checkbox" /> Règle priorité P1..P7 obligatoire</label>
       <div class="row"><button id="runAuditBtn">Lancer audit</button><button id="repairProjectBtn">Réparer projet</button></div>
       <div class="row"><button id="reviewModeBtn">Mode review</button><button id="compareSnapshotBtn">Comparer versions</button></div>
+      <div class="row"><button id="exportZoneCsvBtn">Export zones CSV</button><button id="exportLogsBtn">Export logs</button></div>
+      <label>Rule engine JSON <textarea id="rulesJsonInput" rows="4" placeholder='{"aisleMinWidth":true}'></textarea></label>
+      <button id="applyRulesJsonBtn">Appliquer rules JSON</button>
       <label><input id="autoHidePanels" type="checkbox" /> Auto-hide panneaux (iPhone)</label>
       <label><input id="focusMode" type="checkbox" /> Focus mode canvas</label>
       <label><input id="perfMode" type="checkbox" /> Mode performance</label>
