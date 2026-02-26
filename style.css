@@ -3,6 +3,11 @@
 .topbar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;padding:.6rem .8rem;background:#121620;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:30}
 button,input{background:#111722;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:.4rem .55rem}
 button{cursor:pointer}.toolbar{display:flex;gap:.35rem;flex-wrap:wrap}
+.tool-btn{display:flex;align-items:center;gap:.4rem;padding:.38rem .52rem;transition:background .16s ease,border-color .16s ease,transform .08s ease}
+.tool-btn:hover{background:#182132;border-color:#3a4863}
+.tool-btn:active{transform:translateY(1px)}
+.tool-btn img{width:16px;height:16px;display:block;filter:brightness(2.35) contrast(1.03)}
+.tool-btn span{font-size:.77rem;line-height:1;white-space:nowrap}
 .layout{display:grid;grid-template-columns:280px 1fr 300px;height:calc(100vh - 58px)}
 .panel{overflow:auto;padding:.75rem;background:var(--panel);border-right:1px solid var(--border)}.right{border-right:none;border-left:1px solid var(--border)}
 .panel h3{margin:.8rem 0 .4rem;font-size:.95rem}.panel label{display:block;font-size:.82rem;margin:.3rem 0;color:var(--muted)}
@@ -17,7 +22,7 @@ canvas{position:absolute;inset:0}
 #warnings{font-size:.78rem;color:#fda4af;padding-left:1rem}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:1rem;background:#0b1020;border:1px solid var(--border);padding:.55rem .8rem;border-radius:10px;display:none;z-index:40}
 .quickbar{position:absolute;left:50%;transform:translateX(-50%);bottom:.6rem;background:#121824d0;border:1px solid var(--border);display:none;gap:.3rem;padding:.3rem;border-radius:11px}
-.quickbar button{font-size:.75rem}
+.quickbar .tool-btn span{display:none}
 @media(max-width:1000px){.layout{grid-template-columns:1fr}.left,.right{display:none}.quickbar{display:flex}.topbar{padding-top:calc(.6rem + env(safe-area-inset-top))}}
 
 .hidden{display:none!important}

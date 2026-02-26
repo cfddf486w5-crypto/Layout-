@@ -1,6 +1,16 @@
 (() => {
 const LAYERS = ['STRUCTURE', 'STORAGE', 'ZONES', 'SAFETY', 'ANNOTATIONS'];
 const TOOLS = ['select','brush','eraser','line','rect','bucket','pan','eyedropper'];
+const TOOL_META = {
+  select: { label: 'Sélection', icon: './assets/icons/tools/select.svg' },
+  brush: { label: 'Pinceau', icon: './assets/icons/tools/brush.svg' },
+  eraser: { label: 'Gomme', icon: './assets/icons/tools/eraser.svg' },
+  line: { label: 'Ligne', icon: './assets/icons/tools/line.svg' },
+  rect: { label: 'Rectangle', icon: './assets/icons/tools/rect.svg' },
+  bucket: { label: 'Remplissage', icon: './assets/icons/tools/bucket.svg' },
+  pan: { label: 'Panoramique', icon: './assets/icons/tools/pan.svg' },
+  eyedropper: { label: 'Pipette', icon: './assets/icons/tools/eyedropper.svg' }
+};
 const CATS = ['all','structure','access','storage','zone','safety','service','annotation','wms'];
 const STORAGE_KEY='dl_layout_pro_v1';
 const gridCanvas = document.getElementById('gridCanvas');
@@ -75,8 +85,14 @@ function colorFor(m){const map={STRUCTURE:'#64748b',STORAGE:'#d97706',ZONES:'#1d
 function resizeCanvas(){[gridCanvas,bpCanvas].forEach(c=>{c.width=wrap.clientWidth*devicePixelRatio;c.height=wrap.clientHeight*devicePixelRatio;c.style.width=wrap.clientWidth+'px';c.style.height=wrap.clientHeight+'px';const cx=c.getContext('2d');cx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)})}
 
 function setTool(t){state.activeTool=t; renderTools();}
-function renderTools(){const box=document.getElementById('toolButtons'); box.innerHTML=''; TOOLS.forEach(t=>{const b=document.createElement('button'); b.textContent=t; if(state.activeTool===t)b.classList.add('active'); b.onclick=()=>setTool(t); box.appendChild(b)});
-  const qb=document.getElementById('quickbar'); qb.innerHTML=''; ['brush','eraser','pan','eyedropper'].forEach(t=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>setTool(t);qb.appendChild(b)})
+function renderTools(){const box=document.getElementById('toolButtons'); box.innerHTML=''; TOOLS.forEach(t=>{const b=document.createElement('button'); const meta=TOOL_META[t]||{label:t,icon:''};
+  b.className='tool-btn'; b.type='button'; b.title=meta.label; b.setAttribute('aria-label',meta.label);
+  b.innerHTML=`${meta.icon?`<img src="${meta.icon}" alt=""/>`:''}<span>${meta.label}</span>`;
+  if(state.activeTool===t)b.classList.add('active'); b.onclick=()=>setTool(t); box.appendChild(b)});
+  const qb=document.getElementById('quickbar'); qb.innerHTML=''; ['brush','eraser','pan','eyedropper'].forEach(t=>{const b=document.createElement('button'); const meta=TOOL_META[t]||{label:t,icon:''};
+    b.className='tool-btn'; b.type='button'; b.title=meta.label; b.setAttribute('aria-label',meta.label);
+    b.innerHTML=`${meta.icon?`<img src="${meta.icon}" alt=""/>`:''}<span>${meta.label}</span>`;
+    b.onclick=()=>setTool(t);qb.appendChild(b)})
 }
 function renderPalette(){const tabs=document.getElementById('categoryTabs'); tabs.innerHTML=''; CATS.forEach(c=>{const b=document.createElement('button');b.className='tab'+(c===state.activeCategory?' active':'');b.textContent=c;b.onclick=()=>{state.activeCategory=c;renderPalette()};tabs.appendChild(b)});
   const q=document.getElementById('searchInput').value.toLowerCase(); const list=document.getElementById('paletteList'); list.innerHTML='';
