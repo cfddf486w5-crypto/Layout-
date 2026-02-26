@@ -41,7 +41,7 @@ const state = {
   viewMode:'2d', view3d:null, view3dSelected:null,
   view3dSettings:{wallHeight:2.6,wallThickness:0.2,quality:'high',showBlueprint:true,walkMode:false},
   tagsCatalog:[{name:'safety',category:'ops',color:'#ef4444'},{name:'cold',category:'zone',color:'#38bdf8'}],
-  rules:{auditMode:true,aisleMinWidth:true,exitClear:true,knownBins:true},
+  rules:{auditMode:true,aisleMinWidth:true,exitClear:true,knownBins:true,binNeedsZone:true,rackCapacityPositive:true,priorityRequired:false},
   profiles:[{id:'default',name:'Opérateur',author:'Equipe',createdAt:new Date().toISOString()}],
   activeProfileId:'default', projectStatus:'draft', language:'fr', reviewMode:false,
   comments:[], errorLogs:[], diffCells:[], autoHidePanels:false, iphoneMode:false, perfMode:false, fpsDebug:false
@@ -139,6 +139,7 @@ function renderAll(){
 
   for(const k of state.selected){const {x,y}=parseKey(k); const p=cellToScreen(x,y); ctx.strokeStyle='#22d3ee'; ctx.lineWidth=2; ctx.strokeRect(p.x+1,p.y+1,cs-2,cs-2)}
   (state.diffCells||[]).slice(0,800).forEach(i=>{const x=i%state.gridW,y=Math.floor(i/state.gridW); const p=cellToScreen(x,y); ctx.strokeStyle='rgba(244,63,94,.9)'; ctx.strokeRect(p.x+2,p.y+2,cs-4,cs-4);});
+  (state.comments||[]).slice(0,300).forEach(c=>{const p=cellToScreen(c.x,c.y); ctx.fillStyle='rgba(251,191,36,.95)'; ctx.beginPath(); ctx.arc(p.x+cs*0.82,p.y+cs*0.2,Math.max(3,cs*0.1),0,Math.PI*2); ctx.fill();});
   if(state.marquee){ const {x1,y1,x2,y2}=state.marquee; const minX=Math.min(x1,x2), minY=Math.min(y1,y2), maxX=Math.max(x1,x2), maxY=Math.max(y1,y2); const p1=cellToScreen(minX,minY), p2=cellToScreen(maxX+1,maxY+1); ctx.fillStyle='rgba(34,211,238,.12)'; ctx.fillRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y); ctx.strokeStyle='rgba(34,211,238,.8)'; ctx.strokeRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);}
   if(state.measurePoints.length===2){const [a,b]=state.measurePoints; const pa=cellToScreen(a.x+.5,a.y+.5), pb=cellToScreen(b.x+.5,b.y+.5); ctx.strokeStyle='#facc15'; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(pa.x,pa.y); ctx.lineTo(pb.x,pb.y); ctx.stroke();}
   renderMiniMap();
@@ -205,6 +206,14 @@ function pointerUp(e){
   if(state.measureMode){
     state.measurePoints.push(c); if(state.measurePoints.length>2) state.measurePoints=state.measurePoints.slice(-2);
     if(state.measurePoints.length===2){ const [a,b]=state.measurePoints; const dist=Math.hypot(b.x-a.x,b.y-a.y); toast(`Distance: ${dist.toFixed(2)} cellules (${(dist*state.cellRealSize).toFixed(1)} cm)`); }
+  }
+  if(state.reviewMode && state.activeTool==='select' && inBounds(c.x,c.y)){
+    const txt=prompt('Commentaire review (optionnel):','');
+    if(txt){
+      state.comments.unshift({id:Date.now(),x:c.x,y:c.y,text:txt,author:state.profiles.find(p=>p.id===state.activeProfileId)?.name||'N/A',date:new Date().toISOString()});
+      state.comments=state.comments.slice(0,300);
+      saveActiveProject();
+    }
   }
   state.pointerStart=null; state.dragMode=''; renderAll(); renderProps(); saveActiveProject();
 }
@@ -317,7 +326,8 @@ function migrateLayout(layout={}){
   if(!migrated.cellRealSize) migrated.cellRealSize = 100;
   if(!migrated.snapshots) migrated.snapshots = [];
   if(!migrated.tagsCatalog) migrated.tagsCatalog = [{name:'default',category:'custom',color:'#94a3b8'}];
-  if(!migrated.rules) migrated.rules = {auditMode:true,aisleMinWidth:true,exitClear:true,knownBins:true};
+  if(!migrated.rules) migrated.rules = {auditMode:true,aisleMinWidth:true,exitClear:true,knownBins:true,binNeedsZone:true,rackCapacityPositive:true,priorityRequired:false};
+  migrated.rules = {auditMode:true,aisleMinWidth:true,exitClear:true,knownBins:true,binNeedsZone:true,rackCapacityPositive:true,priorityRequired:false,...migrated.rules};
   if(!migrated.profiles) migrated.profiles = [{id:'default',name:'Opérateur',author:'Equipe',createdAt:new Date().toISOString()}];
   if(!migrated.activeProfileId) migrated.activeProfileId = migrated.profiles[0]?.id || 'default';
   if(!migrated.projectStatus) migrated.projectStatus = 'draft';
@@ -329,7 +339,7 @@ function migrateLayout(layout={}){
   if(migrated.schemaVersion !== SCHEMA_VERSION) migrated.schemaVersion = SCHEMA_VERSION;
   return migrated;
 }
-function importJSON(file, mode='replace'){file.text().then(t=>{try{const parsed=JSON.parse(t); const sv=String(parsed?.schemaVersion||parsed?.layout?.schemaVersion||''); if(sv && sv!==SCHEMA_VERSION && sv!=='1') throw new Error('schemaVersion non supportée'); if(!parsed?.layout?.cells || !parsed?.layout?.gridW) throw new Error('Schéma invalide: champs manquants'); const incoming=migrateLayout(parsed.layout); if(mode==='merge'){pushHistory('Merge import'); for(let y=0;y<Math.min(state.gridH,incoming.gridH);y++)for(let x=0;x<Math.min(state.gridW,incoming.gridW);x++){const tile=incoming.cells[y*incoming.gridW+x]; if(tile&&tile!=='empty'){paint(x,y,tile,{ignoreLock:true}); state.cellProps[key(x,y)]=normalizeProp(incoming.cellProps?.[key(x,y)],x,y,tile);}} renderAll();} else restore(incoming); toast('Import OK');}catch(err){logError(err.message,'importJSON'); alert('Import JSON invalide: '+err.message);}});}
+function importJSON(file, mode='replace'){file.text().then(t=>{try{const parsed=JSON.parse(t); const sv=String(parsed?.schemaVersion||parsed?.layout?.schemaVersion||''); if(sv && sv!==SCHEMA_VERSION && sv!=='1') throw new Error('schemaVersion non supportée'); const check=validateLayoutSchema(parsed?.layout); if(!check.ok) throw new Error('Schéma invalide: '+check.missing.join(', ')); const incoming=migrateLayout(parsed.layout); if(mode==='merge'){let changed=0; for(let y=0;y<Math.min(state.gridH,incoming.gridH);y++)for(let x=0;x<Math.min(state.gridW,incoming.gridW);x++){const tile=incoming.cells[y*incoming.gridW+x]; if(tile&&tile!=='empty'&&tile!==state.cells[idx(x,y)]) changed++;} if(!confirm(`Fusion import: ${changed} cellule(s) seront écrasées. Continuer ?`)) return; pushHistory('Merge import'); for(let y=0;y<Math.min(state.gridH,incoming.gridH);y++)for(let x=0;x<Math.min(state.gridW,incoming.gridW);x++){const tile=incoming.cells[y*incoming.gridW+x]; if(tile&&tile!=='empty'){paint(x,y,tile,{ignoreLock:true}); state.cellProps[key(x,y)]=normalizeProp(incoming.cellProps?.[key(x,y)],x,y,tile);}} renderAll();} else restore(incoming); toast('Import OK');}catch(err){logError(err.message,'importJSON'); alert('Import JSON invalide: '+err.message);}});}
 function exportPNG(){
   const withGrid=confirm('Inclure la grille dans le PNG ?');
   const c=document.createElement('canvas'); c.width=gridCanvas.width; c.height=gridCanvas.height; const cc=c.getContext('2d'); cc.drawImage(bpCanvas,0,0); cc.drawImage(gridCanvas,0,0);
@@ -338,8 +348,41 @@ function exportPNG(){
   download('layout.png',c.toDataURL('image/png'),'image/png',true);
 }
 function exportBinsCSV(){const rows=listBinRows(); const header='bin,type,zone,aisle,position,tags'; const csv=[header,...rows.map(r=>[r.bin,r.type,r.zone,r.aisle,r.position,r.tags].map(v=>`"${String(v).replaceAll('"','""')}"`).join(','))].join('\n'); download('bins.csv',csv,'text/csv'); toast(`CSV bins: ${rows.length}`);}
-function runAuditChecks(){const out=[]; if(state.rules.knownBins){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){if(state.cells[idx(x,y)]==='bin_unknown_type') out.push(`Bin inconnu en ${x},${y}`);}} if(state.rules.exitClear){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){const t=state.cells[idx(x,y)]; if(t==='marker_exit'){const blocked=[[1,0],[-1,0],[0,1],[0,-1]].every(([dx,dy])=>!inBounds(x+dx,y+dy)||state.cells[idx(x+dx,y+dy)].includes('wall')); if(blocked) out.push(`Issue bloquée en ${x},${y}`);}}} if(state.rules.aisleMinWidth){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){if(state.cells[idx(x,y)]==='aisle_walkway'){const sideA=inBounds(x-1,y)&&state.cells[idx(x-1,y)]==='aisle_walkway'; const sideB=inBounds(x+1,y)&&state.cells[idx(x+1,y)]==='aisle_walkway'; if(!sideA&&!sideB) out.push(`Allée étroite en ${x},${y}`);}}} return out;}
+function exportZonesCSV(){
+  const zoneMap={};
+  for(let y=0;y<state.gridH;y++) for(let x=0;x<state.gridW;x++){
+    const tile=state.cells[idx(x,y)];
+    if(!tile.startsWith('zone_')) continue;
+    const z=tile.replace('zone_','');
+    zoneMap[z] ??= {zone:z,cells:0,racks:0,bins:0};
+    zoneMap[z].cells++;
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(([dx,dy])=>{
+      if(!inBounds(x+dx,y+dy)) return;
+      const n=state.cells[idx(x+dx,y+dy)];
+      if(n.includes('rack')) zoneMap[z].racks++;
+      if(n.startsWith('bin_')) zoneMap[z].bins++;
+    });
+  }
+  const rows=Object.values(zoneMap).map(z=>({...z,racks:Math.ceil(z.racks/2),bins:Math.ceil(z.bins/2)}));
+  const csv=['zone,cells,racks,bins',...rows.map(r=>`${r.zone},${r.cells},${r.racks},${r.bins}`)].join('\n');
+  download('zones.csv',csv,'text/csv');
+  toast(`CSV zones: ${rows.length}`);
+}
+function runAuditChecks(){const out=[]; if(state.rules.knownBins){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){if(state.cells[idx(x,y)]==='bin_unknown_type') out.push(`Bin inconnu en ${x},${y}`);}} if(state.rules.exitClear){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){const t=state.cells[idx(x,y)]; if(t==='marker_exit'){const blocked=[[1,0],[-1,0],[0,1],[0,-1]].every(([dx,dy])=>!inBounds(x+dx,y+dy)||state.cells[idx(x+dx,y+dy)].includes('wall')); if(blocked) out.push(`Issue bloquée en ${x},${y}`);}}} if(state.rules.aisleMinWidth){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){if(state.cells[idx(x,y)]==='aisle_walkway'){const sideA=inBounds(x-1,y)&&state.cells[idx(x-1,y)]==='aisle_walkway'; const sideB=inBounds(x+1,y)&&state.cells[idx(x+1,y)]==='aisle_walkway'; if(!sideA&&!sideB) out.push(`Allée étroite en ${x},${y}`);}}}
+  if(state.rules.binNeedsZone){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){const tile=state.cells[idx(x,y)]; if(!(tile.startsWith('bin_')||tile.includes('rack'))) continue; const p=state.cellProps[key(x,y)]||{}; if(!(p.customFields?.zone||'').trim()) out.push(`Bin/rack sans zone en ${x},${y}`);}}
+  if(state.rules.rackCapacityPositive){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){const tile=state.cells[idx(x,y)]; if(!tile.includes('rack')) continue; const p=state.cellProps[key(x,y)]||{}; if((+p.customFields?.capacity||0)<=0) out.push(`Rack sans capacité en ${x},${y}`);}}
+  if(state.rules.priorityRequired){for(let y=0;y<state.gridH;y++)for(let x=0;x<state.gridW;x++){const tile=state.cells[idx(x,y)]; if(!tile.startsWith('bin_')) continue; const p=state.cellProps[key(x,y)]||{}; if(!p.binPriority) out.push(`Bin sans priorité P1-P7 en ${x},${y}`);}}
+  return out;}
+function validateLayoutSchema(layout){
+  const missing=[];
+  if(!layout||typeof layout!=='object') missing.push('layout');
+  if(!Array.isArray(layout?.cells)) missing.push('cells');
+  if(!layout?.gridW||!layout?.gridH) missing.push('gridW/gridH');
+  if(layout?.cells && layout?.gridW && layout?.gridH && layout.cells.length!==layout.gridW*layout.gridH) missing.push('cells.length');
+  return {ok:!missing.length,missing};
+}
 function exportAuditPDF(){const rows=listBinRows(); const issues=runAuditChecks(); const w=window.open('','_blank'); if(!w) return; w.document.write(`<html><body><h1>DL Layout Report</h1><h2>Légende</h2><p>Status: ${state.projectStatus}</p><h2>Zones/Racks</h2><p>${rows.length} bins</p><h2>Safety</h2><ul>${issues.map(i=>`<li>${i}</li>`).join('')}</ul></body></html>`); w.document.close(); w.print();}
+function exportErrorLogs(){const payload={project:state.projectName,date:new Date().toISOString(),errors:state.errorLogs,history:state.historyLog}; download('layout-logs.json',JSON.stringify(payload,null,2),'application/json'); toast(`Logs exportés: ${state.errorLogs.length}`);}
 function download(name,data,type,isDataUrl){const a=document.createElement('a'); a.download=name; a.href=isDataUrl?data:URL.createObjectURL(new Blob([data],{type})); a.click();}
 
 function saveRoot(data){localStorage.setItem(STORAGE_ROOT,JSON.stringify(data));}
@@ -387,6 +430,7 @@ function bindUI(){
   resizeGridBtn.onclick=()=>{if(!confirm('Redimensionner la grille et réinitialiser le contenu ?')) return; pushHistory('Resize grid'); state.gridW=+gridW.value; state.gridH=+gridH.value; state.cellSize=+cellSize.value; state.cellRealSize=+cellRealSize.value; initCells(); state.selected.clear(); renderAll(); saveActiveProject();};
   exportJsonBtn.onclick=exportJSON; importJsonBtn.onclick=()=>{importJsonInput.dataset.mode='replace'; importJsonInput.click();}; mergeJsonBtn.onclick=()=>{importJsonInput.dataset.mode='merge'; importJsonInput.click();}; importJsonInput.onchange=e=>{const f=e.target.files[0]; if(f) importJSON(f, importJsonInput.dataset.mode || 'replace')};
   exportCsvBtn.onclick=exportBinsCSV; exportPdfBtn.onclick=exportAuditPDF;
+  exportZoneCsvBtn.onclick=exportZonesCSV; exportLogsBtn.onclick=exportErrorLogs;
   saveBtn.onclick=()=>{saveActiveProject(true); toast('Sauvegardé');};
   exportPngBtn.onclick=exportPNG;
   document.getElementById('measureBtn').onclick=()=>{state.measureMode=!state.measureMode; state.measurePoints=[]; toast('Mesure '+(state.measureMode?'ON':'OFF'));};
@@ -457,10 +501,15 @@ function bindUI(){
   ruleAisleWidth.checked=state.rules.aisleMinWidth; ruleAisleWidth.onchange=e=>{state.rules.aisleMinWidth=e.target.checked; buildWarnings();};
   ruleExitClear.checked=state.rules.exitClear; ruleExitClear.onchange=e=>{state.rules.exitClear=e.target.checked; buildWarnings();};
   ruleUnknownBin.checked=state.rules.knownBins; ruleUnknownBin.onchange=e=>{state.rules.knownBins=e.target.checked; buildWarnings();};
+  ruleBinZone.checked=state.rules.binNeedsZone; ruleBinZone.onchange=e=>{state.rules.binNeedsZone=e.target.checked; buildWarnings();};
+  ruleRackCapacity.checked=state.rules.rackCapacityPositive; ruleRackCapacity.onchange=e=>{state.rules.rackCapacityPositive=e.target.checked; buildWarnings();};
+  rulePriority.checked=state.rules.priorityRequired; rulePriority.onchange=e=>{state.rules.priorityRequired=e.target.checked; buildWarnings();};
+  rulesJsonInput.value=JSON.stringify(state.rules,null,2);
+  applyRulesJsonBtn.onclick=()=>{try{const parsed=JSON.parse(rulesJsonInput.value||'{}'); state.rules={...state.rules,...parsed}; buildWarnings(); saveActiveProject(); toast('Rules JSON appliqué');}catch(err){logError(err.message,'rulesJson'); alert('JSON règles invalide: '+err.message);}};
   runAuditBtn.onclick=()=>{buildWarnings(); toast('Audit mis à jour');};
   repairProjectBtn.onclick=()=>{repairProjectData(state); buildWarnings(); saveActiveProject(); toast('Projet réparé');};
   reviewModeBtn.onclick=()=>{state.reviewMode=!state.reviewMode; toast('Review '+(state.reviewMode?'ON':'OFF'));};
-  compareSnapshotBtn.onclick=()=>{if(state.snapshots.length<2){toast('2 versions min'); return;} const a=state.snapshots[0].data.cells||[]; const b=state.snapshots[1].data.cells||[]; state.diffCells=[]; for(let i=0;i<Math.min(a.length,b.length);i++) if(a[i]!==b[i]) state.diffCells.push(i); toast(`Diff: ${state.diffCells.length}`); renderAll();};
+  compareSnapshotBtn.onclick=()=>{if(state.snapshots.length<2){toast('2 versions min'); return;} const ai=Math.max(1,Math.min(state.snapshots.length,+(prompt('Version A (index)','1')||1)))-1; const bi=Math.max(1,Math.min(state.snapshots.length,+(prompt('Version B (index)','2')||2)))-1; const a=state.snapshots[ai]?.data?.cells||[]; const b=state.snapshots[bi]?.data?.cells||[]; state.diffCells=[]; for(let i=0;i<Math.min(a.length,b.length);i++) if(a[i]!==b[i]) state.diffCells.push(i); toast(`Diff: ${state.diffCells.length}`); renderAll();};
   autoHidePanels.onchange=e=>{state.autoHidePanels=e.target.checked;};
   focusMode.onchange=e=>document.body.classList.toggle('focus-mode',e.target.checked);
   perfMode.onchange=e=>{state.perfMode=e.target.checked; document.body.classList.toggle('perf-mode',state.perfMode);};
